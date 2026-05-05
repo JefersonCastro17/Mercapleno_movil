@@ -1,48 +1,89 @@
 import 'package:mercapleno_appv1/core/config/app_config.dart';
-import 'package:mercapleno_appv1/core/errors/api_exception.dart';
 import 'package:mercapleno_appv1/core/network/api_client.dart';
-import 'package:mercapleno_appv1/features/auth/data/models/auth_session_model.dart';
-import 'package:mercapleno_appv1/features/auth/data/models/login_response_model.dart';
+import 'package:mercapleno_appv1/features/auth/domain/entities/register_request.dart';
 
 class AuthRemoteDataSource {
-  const AuthRemoteDataSource({required ApiClient apiClient})
-    : _apiClient = apiClient;
+  AuthRemoteDataSource({required ApiClient apiClient}) : _apiClient = apiClient;
 
   final ApiClient _apiClient;
 
-  Future<LoginResponseModel> login({
+  Future<Map<String, dynamic>> login({
     required String email,
     required String password,
-  }) async {
-    final response = await _apiClient.post(
-      AppConfig.loginPath,
-      body: <String, dynamic>{'email': email.trim(), 'password': password},
-    );
-
-    return LoginResponseModel.fromJson(response);
-  }
-
-  Future<AuthSessionModel> verifyLoginCode({
-    required String pendingToken,
-    required String code,
-  }) async {
-    final response = await _apiClient.post(
-      AppConfig.verifyLoginCodePath,
+  }) {
+    return _apiClient.post(
+      AppConfig.loginEndpoint,
       body: <String, dynamic>{
-        'pendingToken': pendingToken,
-        'code': code.trim(),
+        'email': email,
+        'password': password,
       },
     );
+  }
 
-    final loginResponse = LoginResponseModel.fromJson(response);
-    if (loginResponse.session == null) {
-      throw ApiException(
-        message: 'No se pudo completar el inicio de sesion.',
-        statusCode: 500,
-        data: response,
-      );
-    }
+  Future<Map<String, dynamic>> verifyLoginCode({
+    required String pendingToken,
+    required String code,
+  }) {
+    return _apiClient.post(
+      AppConfig.verifyLoginCodeEndpoint,
+      body: <String, dynamic>{
+        'pendingToken': pendingToken,
+        'code': code,
+      },
+    );
+  }
 
-    return loginResponse.session!;
+  Future<Map<String, dynamic>> getDocumentTypes() {
+    return _apiClient.get(AppConfig.documentTypesEndpoint);
+  }
+
+  Future<Map<String, dynamic>> register(RegisterRequest request) {
+    return _apiClient.post(
+      AppConfig.registerEndpoint,
+      body: request.toJson(),
+    );
+  }
+
+  Future<Map<String, dynamic>> verifyEmail({
+    required String email,
+    required String code,
+  }) {
+    return _apiClient.post(
+      AppConfig.verifyEmailEndpoint,
+      body: <String, dynamic>{
+        'email': email,
+        'code': code,
+      },
+    );
+  }
+
+  Future<Map<String, dynamic>> resendVerification({required String email}) {
+    return _apiClient.post(
+      AppConfig.resendVerificationEndpoint,
+      body: <String, dynamic>{'email': email},
+    );
+  }
+
+  Future<Map<String, dynamic>> requestPasswordReset({required String email}) {
+    return _apiClient.post(
+      AppConfig.requestPasswordResetEndpoint,
+      body: <String, dynamic>{'email': email},
+    );
+  }
+
+  Future<Map<String, dynamic>> resetPassword({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) {
+    return _apiClient.post(
+      AppConfig.resetPasswordEndpoint,
+      body: <String, dynamic>{
+        'email': email,
+        'code': code,
+        'newPassword': newPassword,
+      },
+    );
   }
 }
+

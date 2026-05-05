@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mercapleno_appv1/core/theme/app_theme.dart';
 import 'package:mercapleno_appv1/features/auth/presentation/controllers/auth_controller.dart';
-import 'package:mercapleno_appv1/features/auth/presentation/pages/login_page.dart';
 import 'package:mercapleno_appv1/features/home/presentation/pages/home_page.dart';
+import 'package:mercapleno_appv1/features/home/presentation/pages/landing_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key, required this.authController});
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
             return HomePage(controller: authController);
           }
 
-          return LoginPage(controller: authController);
+          return LandingPage(controller: authController);
         },
       ),
     );
@@ -68,3 +68,4 @@ class _SplashPage extends StatelessWidget {
     );
   }
 }
+

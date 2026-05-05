@@ -1,28 +1,38 @@
-import 'package:flutter/foundation.dart';
-
 class AppConfig {
   AppConfig._();
 
-  static const String _fallbackDesktopUrl = 'http://localhost:4000';
-  static const String _androidEmulatorUrl = 'http://10.0.2.2:4000';
-  static const String authBasePath = '/api/auth';
-  static const String loginPath = '$authBasePath/login';
-  static const String verifyLoginCodePath = '$authBasePath/verify-login-code';
+  // 🔥 CAMBIA AQUÍ TU IP DEL PC
+  static const String _baseUrl = 'http://192.168.1.13:4000';
 
   static String get apiBaseUrl {
-    const customBaseUrl = String.fromEnvironment('API_BASE_URL');
-    if (customBaseUrl.isNotEmpty) {
-      return customBaseUrl;
+    const override = String.fromEnvironment('API_BASE_URL');
+
+    if (override.isNotEmpty) {
+      return _sanitizeBaseUrl(override);
     }
 
-    if (kIsWeb) {
-      return _fallbackDesktopUrl;
-    }
+    return _baseUrl;
+  }
 
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      return _androidEmulatorUrl;
-    }
+  // 🔗 ENDPOINTS
+  static String get authBasePath => '/api/auth';
 
-    return _fallbackDesktopUrl;
+  static String get loginEndpoint => '$authBasePath/login';
+  static String get verifyLoginCodeEndpoint => '$authBasePath/verify-login-code';
+  static String get documentTypesEndpoint => '$authBasePath/document-types';
+  static String get registerEndpoint => '$authBasePath/register';
+  static String get verifyEmailEndpoint => '$authBasePath/verify-email';
+  static String get resendVerificationEndpoint =>
+      '$authBasePath/resend-verification';
+  static String get requestPasswordResetEndpoint =>
+      '$authBasePath/request-password-reset';
+  static String get resetPasswordEndpoint => '$authBasePath/reset-password';
+
+  // 🧹 Limpieza de URL
+  static String _sanitizeBaseUrl(String value) {
+    if (value.endsWith('/')) {
+      return value.substring(0, value.length - 1);
+    }
+    return value;
   }
 }

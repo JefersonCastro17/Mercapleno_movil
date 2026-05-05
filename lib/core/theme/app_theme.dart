@@ -3,84 +3,79 @@ import 'package:flutter/material.dart';
 class AppTheme {
   AppTheme._();
 
-  static const Color _primaryBlue = Color(0xFF0B5CAD);
-  static const Color _deepBlue = Color(0xFF103A61);
-  static const Color _accentOrange = Color(0xFFF4A300);
-  static const Color _surface = Color(0xFFF6F8FC);
-  static const Color _textPrimary = Color(0xFF17212B);
-
   static ThemeData light() {
-    final baseTheme = ThemeData(
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: _primaryBlue,
-        primary: _primaryBlue,
-        secondary: _accentOrange,
-        surface: Colors.white,
-      ),
-      scaffoldBackgroundColor: _surface,
-      useMaterial3: true,
+    const seedColor = Color(0xFF0B4A8B);
+
+    final scheme = ColorScheme.fromSeed(
+      seedColor: seedColor,
+      brightness: Brightness.light,
+      primary: seedColor,
+      secondary: const Color(0xFFF59E0B),
+      surface: Colors.white,
     );
 
-    return baseTheme.copyWith(
-      textTheme: baseTheme.textTheme.apply(
-        bodyColor: _textPrimary,
-        displayColor: _textPrimary,
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: scheme,
+      scaffoldBackgroundColor: const Color(0xFFF5F7FB),
+      cardTheme: CardThemeData(
+        color: Colors.white,
+        elevation: 18,
+        shadowColor: const Color(0x140B1F33),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(28),
+        ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: Colors.white,
+        fillColor: const Color(0xFFF8FAFD),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 18,
           vertical: 16,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Color(0xFFD7E1EE)),
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(color: Color(0xFFDCE6F1)),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Color(0xFFD7E1EE)),
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(color: Color(0xFFDCE6F1)),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: _primaryBlue, width: 1.5),
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(color: seedColor, width: 1.4),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Colors.redAccent),
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(color: Color(0xFFD92D20)),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(color: Color(0xFFD92D20), width: 1.4),
         ),
-      ),
-      cardTheme: CardThemeData(
-        color: Colors.white,
-        elevation: 10,
-        shadowColor: _deepBlue.withValues(alpha: 0.12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: _accentOrange,
-          foregroundColor: Colors.white,
-          minimumSize: const Size.fromHeight(56),
-          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          minimumSize: const Size.fromHeight(54),
+          textStyle: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(18),
           ),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: _primaryBlue,
           minimumSize: const Size.fromHeight(52),
-          side: const BorderSide(color: _primaryBlue),
+          side: const BorderSide(color: Color(0xFFB7C7DA)),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(18),
           ),
         ),
       ),
     );
   }
 }
+
