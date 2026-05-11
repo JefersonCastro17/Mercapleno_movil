@@ -2,7 +2,11 @@ import 'package:mercapleno_appv1/features/auth/domain/entities/auth_challenge.da
 import 'package:mercapleno_appv1/features/auth/domain/entities/auth_session.dart';
 
 class LoginResult {
-  const LoginResult({required this.message, this.session, this.challenge});
+  const LoginResult({
+    required this.message,
+    this.session,
+    this.challenge,
+  });
 
   final String message;
   final AuthSession? session;
@@ -10,3 +14,4 @@ class LoginResult {
 
   bool get requiresTwoFactor => challenge != null;
 }
+

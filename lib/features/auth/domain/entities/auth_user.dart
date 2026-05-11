@@ -20,15 +20,8 @@ class AuthUser {
   final String? tipoDocumento;
 
   String get fullName {
-    final parts = [
-      nombre.trim(),
-      apellido.trim(),
-    ].where((value) => value.isNotEmpty).toList();
-
-    if (parts.isEmpty) {
-      return email;
-    }
-
-    return parts.join(' ');
+    final value = '$nombre $apellido'.trim();
+    return value.isEmpty ? email : value;
   }
 }
+
