@@ -1,5 +1,6 @@
 import 'package:mercapleno_appv1/core/config/app_config.dart';
 import 'package:mercapleno_appv1/core/network/api_client.dart';
+import 'package:mercapleno_appv1/features/auth/data/models/register_request_model.dart';
 import 'package:mercapleno_appv1/features/auth/domain/entities/register_request.dart';
 
 class AuthRemoteDataSource {
@@ -40,7 +41,7 @@ class AuthRemoteDataSource {
   Future<Map<String, dynamic>> register(RegisterRequest request) {
     return _apiClient.post(
       AppConfig.registerEndpoint,
-      body: request.toJson(),
+      body: RegisterRequestModel.fromEntity(request).toJson(),
     );
   }
 

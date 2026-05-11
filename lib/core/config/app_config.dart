@@ -1,7 +1,7 @@
 class AppConfig {
   AppConfig._();
 
-  // 🔥 CAMBIA AQUÍ TU IP DEL PC
+  // Cambia esta URL.
   static const String _baseUrl = 'http://192.168.1.13:4000';
 
   static String get apiBaseUrl {
@@ -14,7 +14,7 @@ class AppConfig {
     return _baseUrl;
   }
 
-  // 🔗 ENDPOINTS
+  // Endpoints.
   static String get authBasePath => '/api/auth';
 
   static String get loginEndpoint => '$authBasePath/login';
@@ -28,7 +28,6 @@ class AppConfig {
       '$authBasePath/request-password-reset';
   static String get resetPasswordEndpoint => '$authBasePath/reset-password';
 
-  // 🧹 Limpieza de URL
   static String _sanitizeBaseUrl(String value) {
     if (value.endsWith('/')) {
       return value.substring(0, value.length - 1);

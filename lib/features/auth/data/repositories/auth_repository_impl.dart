@@ -1,9 +1,10 @@
 import 'package:mercapleno_appv1/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:mercapleno_appv1/features/auth/data/models/auth_session_model.dart';
+import 'package:mercapleno_appv1/features/auth/data/models/document_type_model.dart';
 import 'package:mercapleno_appv1/core/network/api_cache.dart';
 import 'package:mercapleno_appv1/features/auth/domain/entities/action_feedback.dart';
 import 'package:mercapleno_appv1/features/auth/domain/entities/auth_challenge.dart';
 import 'package:mercapleno_appv1/features/auth/domain/entities/auth_session.dart';
-import 'package:mercapleno_appv1/features/auth/domain/entities/auth_user.dart';
 import 'package:mercapleno_appv1/features/auth/domain/entities/document_type.dart';
 import 'package:mercapleno_appv1/features/auth/domain/entities/login_result.dart';
 import 'package:mercapleno_appv1/features/auth/domain/entities/register_request.dart';
@@ -30,6 +31,7 @@ class AuthRepositoryImpl implements AuthRepository {
     final data = await _remoteDataSource.login(email: email, password: password);
     final message = _readMessage(data, fallback: 'Inicio de sesion exitoso');
 
+    // Si el backend exige segundo factor, todavia no se crea sesion final.
     if (data['requiresTwoFactor'] == true) {
       final user = _readMap(data['user']);
 
@@ -69,6 +71,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<List<DocumentType>> getDocumentTypes() async {
+    // Evita pedir el mismo catalogo varias veces mientras la app esta abierta.
     // Verificar caché primero
     final cached = _cache.get('document_types');
     if (cached != null && cached.value is List<DocumentType>) {
@@ -84,10 +87,12 @@ class AuthRepositoryImpl implements AuthRepository {
 
     final documentTypes = rawList
         .whereType<Map>()
-        .map((item) => DocumentType.fromJson(item.cast<String, dynamic>()))
+        .map((item) => DocumentTypeModel.fromJson(item.cast<String, dynamic>()))
+        .map((item) => item.toEntity())
         .toList(growable: false);
 
     // Guardar en caché por 24 horas
+    // Cambia poco, asi que se conserva por 24 horas.
     _cache.set('document_types', documentTypes,
         ttl: const Duration(hours: 24));
 
@@ -146,13 +151,15 @@ class AuthRepositoryImpl implements AuthRepository {
     return _sessionStorage.clear();
   }
 
+  // Construye la sesion de dominio a partir del JSON del backend.
   AuthSession _buildSession(Map<String, dynamic> data) {
-    return AuthSession(
-      token: _readString(data['token']),
-      user: AuthUser.fromJson(_readMap(data['user'])),
-    );
+    return AuthSessionModel.fromJson(<String, dynamic>{
+      'token': _readString(data['token']),
+      'user': _readMap(data['user']),
+    }).toEntity();
   }
 
+  // Sirve para respuestas simples de registro, verificacion y reset.
   ActionFeedback _buildActionFeedback(Map<String, dynamic> data) {
     return ActionFeedback(
       success: data['success'] == true,

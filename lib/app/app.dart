@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
       home: AnimatedBuilder(
         animation: authController,
         builder: (context, _) {
+          // La app raiz escucha el estado auth y decide que zona mostrar.
           if (authController.isInitializing) {
             return const _SplashPage();
           }

@@ -6,6 +6,8 @@ import 'package:mercapleno_appv1/features/auth/data/datasources/auth_remote_data
 import 'package:mercapleno_appv1/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:mercapleno_appv1/features/auth/presentation/controllers/auth_controller.dart';
 
+// Arma manualmente las dependencias principales del modulo auth.
+// Aqui aun no se usa un contenedor de inyeccion de dependencias.
 Future<AuthController> createAuthController() async {
   final repository = AuthRepositoryImpl(
     remoteDataSource: AuthRemoteDataSource(apiClient: ApiClient()),
@@ -13,11 +15,12 @@ Future<AuthController> createAuthController() async {
   );
 
   final controller = AuthController(repository: repository);
-  await controller.initialize();
+  await controller.initialize(); //sesion antes
   return controller;
 }
 
 Future<void> main() async {
+  // Flutter debe estar listo antes de usar plugins como SharedPreferences.
   WidgetsFlutterBinding.ensureInitialized();
   final authController = await createAuthController();
   runApp(MyApp(authController: authController));

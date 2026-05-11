@@ -20,6 +20,7 @@ class AuthController extends ChangeNotifier {
 
   final AuthRepository _repository;
 
+  // Estado principal del flujo de autenticacion.
   AuthSession? _session;
   AuthChallenge? _challenge;
   AuthView _currentView = AuthView.login;
@@ -45,6 +46,7 @@ class AuthController extends ChangeNotifier {
   String? get documentTypesError => _documentTypesError;
   List<DocumentType> get documentTypes => _documentTypes;
 
+  // Al arrancar la app intenta recuperar una sesion previa.
   Future<void> initialize() async {
     try {
       _session = await _repository.restoreSession();
@@ -54,6 +56,7 @@ class AuthController extends ChangeNotifier {
     }
   }
 
+  // Puede terminar en sesion valida o en un paso extra de 2FA.
   Future<void> loginWithCredentials({
     required String email,
     required String password,
@@ -130,6 +133,7 @@ class AuthController extends ChangeNotifier {
     }
   }
 
+  // Cambia a registro y carga catalogos auxiliares si hacen falta.
   Future<void> showRegister() async {
     _challenge = null;
     _currentView = AuthView.register;
@@ -174,6 +178,7 @@ class AuthController extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Lee los tipos de identificacion y evita repetir trabajo innecesario.
   Future<void> loadDocumentTypes({bool force = false}) async {
     if (_isLoadingDocumentTypes) {
       return;
@@ -337,6 +342,7 @@ class AuthController extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Limpia sesion y devuelve la app al estado publico.
   Future<void> logout() async {
     await _repository.logout();
     _session = null;

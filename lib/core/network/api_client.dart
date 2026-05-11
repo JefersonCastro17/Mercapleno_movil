@@ -16,6 +16,7 @@ class ApiClient {
   static const _getRetryCount = 1;
   static const _retryDelay = Duration(milliseconds: 350);
 
+  // GET se usa para lecturas y tiene un reintento simple.
   Future<Map<String, dynamic>> get(
     String path, {
     Map<String, String>? headers,
@@ -59,6 +60,7 @@ class ApiClient {
     }
   }
 
+  // POST se usa para enviar datos al backend en formato JSON.
   Future<Map<String, dynamic>> post(
     String path, {
     Map<String, dynamic>? body,
@@ -112,6 +114,7 @@ class ApiClient {
     return Uri.parse('${AppConfig.apiBaseUrl}$normalizedPath');
   }
 
+  // Punto central de timeout, logs, reintentos y manejo de errores.
   Future<Map<String, dynamic>> _executeRequest(
     Future<http.Response> Function() request, {
     required String method,
@@ -195,6 +198,8 @@ class ApiClient {
     );
   }
 
+  // El proyecto intenta trabajar siempre con mapas.
+  // Si el backend devolviera una lista u otro valor, se adapta aqui.
   Map<String, dynamic> _decodeBody(String body) {
     if (body.trim().isEmpty) {
       return <String, dynamic>{};
