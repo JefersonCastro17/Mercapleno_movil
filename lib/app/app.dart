@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mercapleno_appv1/core/theme/app_theme.dart';
 import 'package:mercapleno_appv1/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:mercapleno_appv1/features/auth/presentation/pages/auth_route_args.dart';
+import 'package:mercapleno_appv1/features/auth/presentation/pages/login_page.dart';
+import 'package:mercapleno_appv1/features/auth/presentation/pages/register_page.dart';
 import 'package:mercapleno_appv1/features/home/presentation/pages/home_page.dart';
 import 'package:mercapleno_appv1/features/home/presentation/pages/landing_page.dart';
 
@@ -30,6 +33,29 @@ class MyApp extends StatelessWidget {
           return LandingPage(controller: authController);
         },
       ),
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case LoginPage.routeName:
+            final args = settings.arguments as LoginPageArgs;
+            return MaterialPageRoute(
+              builder: (_) => LoginPage(
+                controller: args.controller,
+                prefilledEmail: args.prefilledEmail,
+                infoMessage: args.infoMessage,
+              ),
+            );
+          case RegisterPage.routeName:
+            final args = settings.arguments as RegisterPageArgs;
+            return MaterialPageRoute(
+              builder: (_) => RegisterPage(
+                controller: args.controller,
+                prefilledEmail: args.prefilledEmail,
+              ),
+            );
+          default:
+            return null;
+        }
+      },
     );
   }
 }

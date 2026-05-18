@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mercapleno_appv1/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:mercapleno_appv1/features/auth/presentation/pages/auth_route_args.dart';
 import 'package:mercapleno_appv1/features/auth/presentation/pages/register_page.dart';
 import 'package:mercapleno_appv1/features/auth/presentation/widgets/auth_page_shell.dart';
 
 class LoginPage extends StatefulWidget {
+  static const routeName = '/login';
   const LoginPage({
     super.key,
     required this.controller,
@@ -109,12 +111,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _openRegisterPage() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => RegisterPage(
-          controller: widget.controller,
-          prefilledEmail: _loginEmailController.text.trim(),
-        ),
+    Navigator.of(context).pushReplacementNamed(
+      RegisterPage.routeName,
+      arguments: RegisterPageArgs(
+        controller: widget.controller,
+        prefilledEmail: _loginEmailController.text.trim(),
       ),
     );
   }
