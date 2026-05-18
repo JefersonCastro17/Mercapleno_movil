@@ -50,7 +50,23 @@ class CarritoPage extends StatelessWidget {
                           ),
                         ),
                         title: Text(item.nombre, style: const TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: Text('${item.cantidad} x \$${item.precio.toStringAsFixed(0)}'),
+                        // 🟢 SOLUCIÓN 2: Carga de la Descripción en el Carrito integrada
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              item.descripcion, 
+                              maxLines: 1, 
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontSize: 12, color: Colors.grey),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '${item.cantidad} x \$${item.precio.toStringAsFixed(0)}',
+                              style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.blueGrey),
+                            ),
+                          ],
+                        ),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -151,7 +167,7 @@ class _ResumenPagoSectionState extends State<_ResumenPagoSection> {
                   backgroundColor: const Color(0xFF0D47A1), // Azul institucional
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                onPressed: _isProcessing ? null : () => _ejecutarPago(context),
+                onPressed: _isProcessing ? null : _ejecutarPago,
                 child: _isProcessing
                     ? const CircularProgressIndicator(color: Colors.white)
                     : const Text('CONFIRMAR Y PAGAR', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
@@ -163,38 +179,47 @@ class _ResumenPagoSectionState extends State<_ResumenPagoSection> {
     );
   }
 
-  Future<void> _ejecutarPago(BuildContext context) async {
+  // 🟢 SOLUCIÓN 3: Redirección Asíncrona Protegida al Ticket sin pérdida de memoria
+  Future<void> _ejecutarPago() async {
+    if (widget.ventaProvider.cart.isEmpty) return;
+
     setState(() => _isProcessing = true);
-
     try {
-      // 1. Guardamos los datos antes de que el proceso limpie el carrito
-      final List<ProductoModel> productosParaTicket = List.from(widget.ventaProvider.cart);
-      final totalesParaTicket = widget.ventaProvider.totals;
+      // 1. Clonamos los items del carrito ANTES de realizar cualquier operación
+      final listaProductosTicket = List<ProductoModel>.from(widget.ventaProvider.cart);
+      final double totalFinal = widget.ventaProvider.totals.finalTotal;
+      final String metodoPagoUsado = widget.ventaProvider.selectedPaymentMethod;
 
-      // 2. Ejecutamos la petición al backend
+      // 2. Despachamos la venta al backend NestJS
       final result = await widget.ventaProvider.processCheckout();
 
       if (result != null && context.mounted) {
-        // 3. REDIRECCIÓN CRÍTICA: Vamos al TicketScreen con los datos
-        Navigator.pushReplacement(
+        // Mapeo seguro del ID de la transacción retornado por NestJS (insertId o id)
+        final String ticketId = (result['id'] ?? result['insertId'] ?? 'N/A').toString();
+
+        // 3. Redireccionamos de inmediato a la pantalla del ticket con la copia preservada
+        await Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (_) => TicketScreen(
               ventaResult: result,
-              productosComprados: productosParaTicket,
-              totales: totalesParaTicket,
+              productosComprados: listaProductosTicket,
+              totales: widget.ventaProvider.totals,
             ),
           ),
         );
+
+        // 4. Limpiamos el carrito únicamente tras haber garantizado el cambio de vista exitoso
+        widget.ventaProvider.clearCart();
       } else if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Error al procesar la venta. Intente de nuevo.')),
+          const SnackBar(content: Text('El servidor rechazó la transacción. Verifique stock o permisos.')),
         );
       }
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Ocurrió un error inesperado: $e')),
+          SnackBar(content: Text('Error al procesar checkout: $e')),
         );
       }
     } finally {

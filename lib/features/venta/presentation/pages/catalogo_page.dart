@@ -75,7 +75,15 @@ class _CatalogoPageState extends State<CatalogoPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(producto.nombre, maxLines: 1, overflow: TextOverflow.ellipsis),
+                          Text(producto.nombre, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.bold)),
+                          const SizedBox(height: 4),
+                          Text(
+                            producto.descripcion,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
+                          const SizedBox(height: 4),
                           Text('\$${producto.precio.toStringAsFixed(0)}', 
                             style: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.bold)),
                           const SizedBox(height: 8),

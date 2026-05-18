@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:mercapleno_appv1/core/config/app_config.dart';
@@ -26,8 +27,9 @@ class ApiClient {
     ApiLogger.logRequest('GET', uri.toString());
 
     try {
+      final builtHeaders = await _buildHeaders(headers);
       return await _executeRequest(
-        () => _httpClient.get(uri, headers: _buildHeaders(headers)),
+        () => _httpClient.get(uri, headers: builtHeaders),
         method: 'GET',
         path: path,
         maxRetries: _getRetryCount,
@@ -55,10 +57,11 @@ class ApiClient {
 
     try {
       // Mantenemos el retorno como Map<String, dynamic> para no romper Auth
+      final builtHeaders = await _buildHeaders(headers);
       final result = await _executeRequest(
         () => _httpClient.post(
           uri,
-          headers: _buildHeaders(headers),
+          headers: builtHeaders,
           body: jsonEncode(body ?? <String, dynamic>{}),
         ),
         method: 'POST',
@@ -114,12 +117,20 @@ class ApiClient {
     }
   }
 
-  Map<String, String> _buildHeaders(Map<String, String>? headers) {
-    return <String, String>{
+  Future<Map<String, String>> _buildHeaders(Map<String, String>? headers) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('mercapleno_auth_token');
+    
+    final map = <String, String>{
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       ...?headers,
     };
+    
+    if (token != null && token.isNotEmpty) {
+      map['Authorization'] = 'Bearer $token';
+    }
+    return map;
   }
 
   dynamic _handleResponse(http.Response response) {

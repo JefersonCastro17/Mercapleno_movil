@@ -45,7 +45,6 @@ class VentaRepositoryImpl {
         'items': items.map((i) => i.toOrderItemJson()).toList(),
         'total': total,
         'id_metodo': idMetodo, // Ejemplo: 'M1'
-        'fecha': DateTime.now().toIso8601String(),
       };
 
       final response = await _apiClient.post(AppConfig.createOrderEndpoint, body: body);
