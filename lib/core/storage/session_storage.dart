@@ -1,14 +1,22 @@
 import 'dart:convert';
 
+<<<<<<< HEAD
 import 'package:mercapleno_appv1/features/auth/data/models/auth_session_model.dart';
 import 'package:mercapleno_appv1/features/auth/domain/entities/auth_session.dart';
+=======
+import 'package:mercapleno_appv1/features/auth/domain/entities/auth_session.dart';
+import 'package:mercapleno_appv1/features/auth/domain/entities/auth_user.dart';
+>>>>>>> feature/sales
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SessionStorage {
   static const _tokenKey = 'mercapleno_auth_token';
   static const _userKey = 'mercapleno_auth_user';
 
+<<<<<<< HEAD
   // Guarda solo lo minimo para reconstruir la sesion al reabrir la app.
+=======
+>>>>>>> feature/sales
   Future<void> saveSession(AuthSession session) async {
     final preferences = await SharedPreferences.getInstance();
     await preferences.setString(_tokenKey, session.token);
@@ -16,7 +24,10 @@ class SessionStorage {
     await preferences.setString(_userKey, jsonEncode(sessionModel.user.toJson()));
   }
 
+<<<<<<< HEAD
   // Lee token y usuario desde storage local y reconstruye la sesion.
+=======
+>>>>>>> feature/sales
   Future<AuthSession?> restoreSession() async {
     final preferences = await SharedPreferences.getInstance();
     final token = preferences.getString(_tokenKey);
@@ -33,10 +44,17 @@ class SessionStorage {
         return null;
       }
 
+<<<<<<< HEAD
       return AuthSessionModel.fromJson(<String, dynamic>{
         'token': token,
         'user': decodedUser,
       }).toEntity();
+=======
+      return AuthSession(
+        token: token,
+        user: AuthUser.fromJson(decodedUser),
+      );
+>>>>>>> feature/sales
     } catch (_) {
       await clear();
       return null;
