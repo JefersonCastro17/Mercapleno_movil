@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mercapleno_appv1/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:mercapleno_appv1/features/auth/presentation/pages/auth_route_args.dart';
 import 'package:mercapleno_appv1/features/auth/presentation/pages/login_page.dart';
 import 'package:mercapleno_appv1/features/auth/presentation/pages/register_page.dart';
 
@@ -9,14 +10,17 @@ class LandingPage extends StatelessWidget {
   final AuthController controller;
 
   void _openAuth(BuildContext context, AuthView targetView) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => targetView == AuthView.register
-            ? RegisterPage(controller: controller)
-            : LoginPage(controller: controller),
-      ),
-    );
+    if (targetView == AuthView.register) {
+      Navigator.of(context).pushNamed(
+        RegisterPage.routeName,
+        arguments: RegisterPageArgs(controller: controller),
+      );
+    } else {
+      Navigator.of(context).pushNamed(
+        LoginPage.routeName,
+        arguments: LoginPageArgs(controller: controller),
+      );
+    }
   }
 
   @override

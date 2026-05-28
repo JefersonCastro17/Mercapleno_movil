@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:mercapleno_appv1/core/theme/app_theme.dart';
 import 'package:mercapleno_appv1/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:mercapleno_appv1/features/auth/presentation/pages/auth_route_args.dart';
@@ -6,9 +6,6 @@ import 'package:mercapleno_appv1/features/auth/presentation/pages/login_page.dar
 import 'package:mercapleno_appv1/features/auth/presentation/pages/register_page.dart';
 import 'package:mercapleno_appv1/features/home/presentation/pages/home_page.dart';
 import 'package:mercapleno_appv1/features/home/presentation/pages/landing_page.dart';
-import 'package:mercapleno_appv1/features/venta/presentation/pages/catalogo_page.dart';
-import 'package:mercapleno_appv1/features/venta/presentation/pages/carrito_page.dart';
-import 'package:mercapleno_appv1/features/venta/presentation/pages/ticket_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key, required this.authController});
@@ -24,6 +21,7 @@ class MyApp extends StatelessWidget {
       home: AnimatedBuilder(
         animation: authController,
         builder: (context, _) {
+          // La app raiz escucha el estado auth y decide que zona mostrar.
           if (authController.isInitializing) {
             return const _SplashPage();
           }
@@ -35,11 +33,6 @@ class MyApp extends StatelessWidget {
           return LandingPage(controller: authController);
         },
       ),
-      routes: {
-        '/catalogo': (context) => const CatalogoPage(),
-        '/carrito': (context) => const CarritoPage(),
-        '/ticket': (context) => const TicketPage(),
-      },
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case LoginPage.routeName:
@@ -102,3 +95,4 @@ class _SplashPage extends StatelessWidget {
     );
   }
 }
+
