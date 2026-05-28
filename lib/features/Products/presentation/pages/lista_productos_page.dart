@@ -5,20 +5,22 @@ import '../widgets/product_form_modal.dart';
 
 class ListaProductosPage extends StatefulWidget {
   final ProductController controller;
-  const ListaProductosPage({super.key, required this.controller});
+  final String token;
+  const ListaProductosPage({super.key, required this.controller, required this.token});
 
   @override
   State<ListaProductosPage> createState() => _ListaProductosPageState();
 }
 
 class _ListaProductosPageState extends State<ListaProductosPage> {
-  final String _token = "TU_TOKEN_AQUI";
+  late final String _token;
   String _searchTerm = "";
   String _statusFilter = "todos";
 
   @override
   void initState() {
     super.initState();
+    _token = widget.token;
     widget.controller.loadProducts(_token);
     widget.controller.addListener(_onControllerUpdate);
   }

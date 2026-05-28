@@ -3,7 +3,8 @@ import 'lista_productos_page.dart';
 import '../controllers/product_controller.dart';
 
 class AdminDashboardPage extends StatelessWidget {
-  const AdminDashboardPage({super.key});
+  final String token;
+  const AdminDashboardPage({super.key, required this.token});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,10 @@ class AdminDashboardPage extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => ListaProductosPage(controller: ProductController()),
+                builder: (_) => ListaProductosPage(
+                  controller: ProductController(),
+                  token: token,
+                ),
               ),
             );
           },

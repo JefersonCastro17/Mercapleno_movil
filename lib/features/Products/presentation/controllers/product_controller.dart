@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import '../../../../core/config/app_config.dart';
 import '../../domain/entities/product_entity.dart';
+import 'package:http_parser/http_parser.dart';
 
 class ProductController extends ChangeNotifier {
-  final String baseUrl = "http://localhost:4000/productos"; // Ajusta según tu backend
+  String get baseUrl => "${AppConfig.apiBaseUrl}/api/productos";
   List<ProductEntity> products = [];
   bool isLoading = false;
 
@@ -47,14 +49,22 @@ class ProductController extends ChangeNotifier {
     });
 
     if (imageFile != null) {
-      request.files.add(await http.MultipartFile.fromPath("imagen", imageFile.path));
+      request.files.add(
+  await http.MultipartFile.fromPath(
+    "imagen",
+    imageFile.path,
+    contentType: MediaType("image", "jpeg"), // o "png", según el archivo
+  ),
+);
     }
 
-    final response = await request.send();
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
     if (response.statusCode == 200 || response.statusCode == 201) {
       await loadProducts(token);
     } else {
-      throw Exception("Error al guardar producto");
+      print("Error al guardar producto: Code ${response.statusCode}, Body: ${response.body}");
+      throw Exception("Error al guardar producto: ${response.statusCode} - ${response.body}");
     }
   }
 
