@@ -7,8 +7,12 @@ class AppConfig {
 
 =======
   // 🔥 CAMBIA AQUÍ TU IP DEL PC
+<<<<<<< HEAD
   static const String _baseUrl = 'http://192.168.101.20:4000';
 >>>>>>> feature/sales
+=======
+  static const String _baseUrl = 'http://192.168.128.16:4000';
+>>>>>>> feature/products
 
   static String get apiBaseUrl {
     const override = String.fromEnvironment('API_BASE_URL');
