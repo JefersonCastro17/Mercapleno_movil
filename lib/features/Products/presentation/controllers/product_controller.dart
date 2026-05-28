@@ -1,30 +1,42 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
-import '../../../../core/config/app_config.dart';
 import '../../domain/entities/product_entity.dart';
-import 'package:http_parser/http_parser.dart';
+import '../../domain/usecases/get_products_usecase.dart';
+import '../../domain/usecases/save_product_usecase.dart';
+import '../../domain/usecases/delete_product_usecase.dart';
+import 'package:http/http.dart' as http;
+import '../../data/datasources/product_remote_datasource.dart';
+import '../../data/repositories/product_repository_impl.dart';
 
 class ProductController extends ChangeNotifier {
-  String get baseUrl => "${AppConfig.apiBaseUrl}/api/productos";
+  final GetProductsUseCase _getProductsUseCase;
+  final SaveProductUseCase _saveProductUseCase;
+  final DeleteProductUseCase _deleteProductUseCase;
+
   List<ProductEntity> products = [];
   bool isLoading = false;
+
+  ProductController({
+    GetProductsUseCase? getProductsUseCase,
+    SaveProductUseCase? saveProductUseCase,
+    DeleteProductUseCase? deleteProductUseCase,
+  })  : _getProductsUseCase = getProductsUseCase ??
+            GetProductsUseCase(ProductRepositoryImpl(
+                ProductRemoteDataSource(http.Client()))),
+        _saveProductUseCase = saveProductUseCase ??
+            SaveProductUseCase(ProductRepositoryImpl(
+                ProductRemoteDataSource(http.Client()))),
+        _deleteProductUseCase = deleteProductUseCase ??
+            DeleteProductUseCase(ProductRepositoryImpl(
+                ProductRemoteDataSource(http.Client())));
 
   Future<void> loadProducts(String token) async {
     isLoading = true;
     notifyListeners();
     try {
-      final response = await http.get(
-        Uri.parse(baseUrl),
-        headers: {"Authorization": "Bearer $token"},
-      );
-      if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-        products = data.map((e) => ProductEntity.fromJson(e)).toList();
-      } else {
-        throw Exception("Error al cargar productos");
-      }
+      products = await _getProductsUseCase.execute(token);
+    } catch (e) {
+      print("Error al cargar productos: $e");
     } finally {
       isLoading = false;
       notifyListeners();
@@ -34,50 +46,39 @@ class ProductController extends ChangeNotifier {
   Future<void> saveProduct({
     required String token,
     int? id,
-    required Map<String, dynamic> fields,
+    required Map<String, String> fields,
     File? imageFile,
   }) async {
-    final uri = id == null
-        ? Uri.parse(baseUrl)
-        : Uri.parse("$baseUrl/$id");
-
-    final request = http.MultipartRequest(id == null ? "POST" : "PUT", uri)
-      ..headers["Authorization"] = "Bearer $token";
-
-    fields.forEach((key, value) {
-      request.fields[key] = value.toString();
-    });
-
-    if (imageFile != null) {
-      request.files.add(
-  await http.MultipartFile.fromPath(
-    "imagen",
-    imageFile.path,
-    contentType: MediaType("image", "jpeg"), // o "png", según el archivo
-  ),
-);
-    }
-
-    final streamedResponse = await request.send();
-    final response = await http.Response.fromStream(streamedResponse);
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      await loadProducts(token);
-    } else {
-      print("Error al guardar producto: Code ${response.statusCode}, Body: ${response.body}");
-      throw Exception("Error al guardar producto: ${response.statusCode} - ${response.body}");
+    try {
+      final success = await _saveProductUseCase.execute(
+        token: token,
+        id: id,
+        fields: fields,
+        imageFile: imageFile,
+      );
+      if (success) {
+        await loadProducts(token);
+      } else {
+        throw Exception("Error al guardar producto");
+      }
+    } catch (e) {
+      print("Error: $e");
+      throw Exception("Error al guardar producto: $e");
     }
   }
 
   Future<void> deleteProduct(int id, String token) async {
-    final response = await http.delete(
-      Uri.parse("$baseUrl/$id"),
-      headers: {"Authorization": "Bearer $token"},
-    );
-    if (response.statusCode == 200) {
-      products.removeWhere((p) => p.id == id);
-      notifyListeners();
-    } else {
-      throw Exception("Error al eliminar producto");
+    try {
+      final success = await _deleteProductUseCase.execute(id, token);
+      if (success) {
+        products.removeWhere((p) => p.id == id);
+        notifyListeners();
+      } else {
+        throw Exception("Error al eliminar producto");
+      }
+    } catch (e) {
+      print("Error: $e");
+      throw Exception("Error al eliminar producto: $e");
     }
   }
 }

@@ -34,8 +34,9 @@ class AuthRemoteDataSource {
     );
   }
 
-  Future<Map<String, dynamic>> getDocumentTypes() {
-    return _apiClient.get(AppConfig.documentTypesEndpoint);
+  Future<Map<String, dynamic>> getDocumentTypes() async {
+    final response = await _apiClient.get(AppConfig.documentTypesEndpoint);
+    return response as Map<String, dynamic>;
   }
 
   Future<Map<String, dynamic>> register(RegisterRequest request) {

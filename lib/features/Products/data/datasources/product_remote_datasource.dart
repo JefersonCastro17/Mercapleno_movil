@@ -3,10 +3,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../domain/entities/product_entity.dart';
 import '../models/product_model.dart';
+import '../../../../core/config/app_config.dart';
 
 class ProductRemoteDataSource {
   final http.Client client;
-  final String baseUrl = "";
+  String get baseUrl => "${AppConfig.apiBaseUrl}/api/productos";
 
   ProductRemoteDataSource(this.client);
 

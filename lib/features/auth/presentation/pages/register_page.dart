@@ -3,10 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mercapleno_appv1/features/auth/domain/entities/register_request.dart';
 import 'package:mercapleno_appv1/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:mercapleno_appv1/features/auth/presentation/pages/auth_route_args.dart';
 import 'package:mercapleno_appv1/features/auth/presentation/pages/login_page.dart';
 import 'package:mercapleno_appv1/features/auth/presentation/widgets/auth_page_shell.dart';
 
 class RegisterPage extends StatefulWidget {
+  static const routeName = '/register';
+
   const RegisterPage({
     super.key,
     required this.controller,
@@ -116,25 +119,23 @@ class _RegisterPageState extends State<RegisterPage> {
         return;
       }
 
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => LoginPage(
-            controller: widget.controller,
-            prefilledEmail: controller.suggestedEmail,
-            infoMessage: controller.infoMessage,
-          ),
+      Navigator.of(context).pushReplacementNamed(
+        LoginPage.routeName,
+        arguments: LoginPageArgs(
+          controller: widget.controller,
+          prefilledEmail: controller.suggestedEmail,
+          infoMessage: controller.infoMessage,
         ),
       );
     });
   }
 
   void _openLoginPage() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => LoginPage(
-          controller: widget.controller,
-          prefilledEmail: _registerEmailController.text.trim(),
-        ),
+    Navigator.of(context).pushReplacementNamed(
+      LoginPage.routeName,
+      arguments: LoginPageArgs(
+        controller: widget.controller,
+        prefilledEmail: _registerEmailController.text.trim(),
       ),
     );
   }

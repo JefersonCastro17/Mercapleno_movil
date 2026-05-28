@@ -1,20 +1,15 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:mercapleno_appv1/core/theme/app_theme.dart';
 import 'package:mercapleno_appv1/features/auth/presentation/controllers/auth_controller.dart';
-<<<<<<< HEAD
-=======
 import 'package:mercapleno_appv1/features/auth/presentation/pages/auth_route_args.dart';
 import 'package:mercapleno_appv1/features/auth/presentation/pages/login_page.dart';
 import 'package:mercapleno_appv1/features/auth/presentation/pages/register_page.dart';
->>>>>>> feature/sales
 import 'package:mercapleno_appv1/features/home/presentation/pages/home_page.dart';
 import 'package:mercapleno_appv1/features/home/presentation/pages/landing_page.dart';
-
-// Importaciones del módulo de Venta
-// CORRECCIÓN: Eliminar el prefijo 'lib/'
 import 'package:mercapleno_appv1/features/venta/presentation/pages/catalogo_page.dart';
 import 'package:mercapleno_appv1/features/venta/presentation/pages/carrito_page.dart';
 import 'package:mercapleno_appv1/features/venta/presentation/pages/ticket_page.dart';
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key, required this.authController});
 
@@ -26,33 +21,25 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Mercapleno',
       theme: AppTheme.light(),
-      
-      // 1. Mantenemos la lógica de inicio de sesión en la raíz
       home: AnimatedBuilder(
         animation: authController,
         builder: (context, _) {
-          // La app raiz escucha el estado auth y decide que zona mostrar.
           if (authController.isInitializing) {
             return const _SplashPage();
           }
 
           if (authController.isAuthenticated) {
-            // Si está autenticado, la base es HomePage
             return HomePage(controller: authController);
           }
 
           return LandingPage(controller: authController);
         },
       ),
-
-      // 2. Definimos las rutas para el módulo Venta
       routes: {
         '/catalogo': (context) => const CatalogoPage(),
         '/carrito': (context) => const CarritoPage(),
         '/ticket': (context) => const TicketPage(),
       },
-
-      // 3. Rutas nombrables para auth con argumentos dinámicos
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case LoginPage.routeName:
@@ -114,9 +101,4 @@ class _SplashPage extends StatelessWidget {
       ),
     );
   }
-<<<<<<< HEAD
 }
-
-=======
-}
->>>>>>> feature/sales

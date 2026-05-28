@@ -48,12 +48,7 @@ class VentaRepositoryImpl {
       };
 
       final response = await _apiClient.post(AppConfig.createOrderEndpoint, body: body);
-
-      if (response is Map<String, dynamic>) {
-        return response; // Retorna el { id: result.insertId } para el Ticket
-      } else {
-        throw Exception('Respuesta del servidor no válida');
-      }
+      return response;
     } catch (e) {
       throw Exception('No se pudo procesar la venta: $e');
     }
