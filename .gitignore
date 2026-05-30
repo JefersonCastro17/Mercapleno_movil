@@ -1,11 +1,27 @@
+# Flutter
 .dart_tool/
 .packages
-build/
+.flutter-plugins
+.flutter-plugins-dependencies
 .flutter-plugins
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
+build/
+
+# Variables de entorno
 .env
 
+# Android
 android/.gradle/
 android/local.properties
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# MacOS
+.DS_Store
