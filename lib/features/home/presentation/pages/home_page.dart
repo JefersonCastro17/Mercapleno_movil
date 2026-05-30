@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:mercapleno_appv1/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:mercapleno_appv1/features/users_admin/presentation/controllers/users_admin_controller.dart';
+import 'package:mercapleno_appv1/features/users_admin/presentation/pages/users_admin_list_page.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key, required this.controller});
+  const HomePage({
+    super.key,
+    required this.controller,
+    required this.usersController,
+  });
 
   final AuthController controller;
+  final UsersAdminController usersController;
 
   String _welcomeRole() {
     final user = controller.session?.user;
@@ -109,6 +116,36 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 28),
+                    if (controller.session?.user.idRol == 1) ...[
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              UsersAdminListPage.routeName,
+                            );
+                          },
+                          icon: const Icon(Icons.admin_panel_settings, color: Color(0xFF0B4A8B)),
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Color(0xFF0B4A8B), width: 1.4),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                          ),
+                          label: const Text(
+                            'Administrar Usuarios',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF0B4A8B),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                    ],
                     SizedBox(
                       width: double.infinity,
                       child: FilledButton(

@@ -109,6 +109,148 @@ class ApiClient {
     }
   }
 
+  // PATCH se usa para actualizaciones parciales en formato JSON.
+  Future<Map<String, dynamic>> patch(
+    String path, {
+    Map<String, dynamic>? body,
+    Map<String, String>? headers,
+  }) async {
+    final uri = _buildUri(path);
+    ApiLogger.logRequest('PATCH', uri.toString());
+
+    try {
+      return await _executeRequest(
+        () => _httpClient.patch(
+          uri,
+          headers: _buildHeaders(headers),
+          body: jsonEncode(body ?? <String, dynamic>{}),
+        ),
+        method: 'PATCH',
+        path: path,
+        maxRetries: 0,
+      );
+    } on http.ClientException {
+      throw const ApiException(
+        message:
+            'No se pudo conectar con el backend. Verifica que este encendido.',
+      );
+    } on TimeoutException {
+      throw const ApiException(
+        message:
+            'El backend tardo demasiado en responder. Verifica la conexion o la IP configurada.',
+      );
+    } on FormatException {
+      throw const ApiException(
+        message: 'El backend respondio con un formato invalido.',
+      );
+    } catch (error) {
+      final rawMessage = error.toString();
+      if (_looksLikeConnectionError(rawMessage)) {
+        throw const ApiException(
+          message:
+              'No se pudo conectar con el backend. Verifica que este encendido.',
+        );
+      }
+
+      throw const ApiException(
+        message: 'Ocurrio un error inesperado. Intenta nuevamente.',
+      );
+    }
+  }
+
+  // PUT se usa para actualizaciones completas en formato JSON.
+  Future<Map<String, dynamic>> put(
+    String path, {
+    Map<String, dynamic>? body,
+    Map<String, String>? headers,
+  }) async {
+    final uri = _buildUri(path);
+    ApiLogger.logRequest('PUT', uri.toString());
+
+    try {
+      return await _executeRequest(
+        () => _httpClient.put(
+          uri,
+          headers: _buildHeaders(headers),
+          body: jsonEncode(body ?? <String, dynamic>{}),
+        ),
+        method: 'PUT',
+        path: path,
+        maxRetries: 0,
+      );
+    } on http.ClientException {
+      throw const ApiException(
+        message:
+            'No se pudo conectar con el backend. Verifica que este encendido.',
+      );
+    } on TimeoutException {
+      throw const ApiException(
+        message:
+            'El backend tardo demasiado en responder. Verifica la conexion o la IP configurada.',
+      );
+    } on FormatException {
+      throw const ApiException(
+        message: 'El backend respondio con un formato invalido.',
+      );
+    } catch (error) {
+      final rawMessage = error.toString();
+      if (_looksLikeConnectionError(rawMessage)) {
+        throw const ApiException(
+          message:
+              'No se pudo conectar con el backend. Verifica que este encendido.',
+        );
+      }
+
+      throw const ApiException(
+        message: 'Ocurrio un error inesperado. Intenta nuevamente.',
+      );
+    }
+  }
+
+  // DELETE se usa para eliminar recursos en el backend.
+  Future<Map<String, dynamic>> delete(
+    String path, {
+    Map<String, String>? headers,
+  }) async {
+    final uri = _buildUri(path);
+    ApiLogger.logRequest('DELETE', uri.toString());
+
+    try {
+      return await _executeRequest(
+        () => _httpClient.delete(uri, headers: _buildHeaders(headers)),
+        method: 'DELETE',
+        path: path,
+        maxRetries: 0,
+      );
+    } on http.ClientException {
+      throw const ApiException(
+        message:
+            'No se pudo conectar con el backend. Verifica que este encendido.',
+      );
+    } on TimeoutException {
+      throw const ApiException(
+        message:
+            'El backend tardo demasiado en responder. Verifica la conexion o la IP configurada.',
+      );
+    } on FormatException {
+      throw const ApiException(
+        message: 'El backend respondio con un formato invalido.',
+      );
+    } catch (error) {
+      final rawMessage = error.toString();
+      if (_looksLikeConnectionError(rawMessage)) {
+        throw const ApiException(
+          message:
+              'No se pudo conectar con el backend. Verifica que este encendido.',
+        );
+      }
+
+      throw const ApiException(
+        message: 'Ocurrio un error inesperado. Intenta nuevamente.',
+      );
+    }
+  }
+
   Uri _buildUri(String path) {
     final normalizedPath = path.startsWith('/') ? path : '/$path';
     return Uri.parse('${AppConfig.apiBaseUrl}$normalizedPath');

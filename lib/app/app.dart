@@ -6,11 +6,19 @@ import 'package:mercapleno_appv1/features/auth/presentation/pages/login_page.dar
 import 'package:mercapleno_appv1/features/auth/presentation/pages/register_page.dart';
 import 'package:mercapleno_appv1/features/home/presentation/pages/home_page.dart';
 import 'package:mercapleno_appv1/features/home/presentation/pages/landing_page.dart';
+import 'package:mercapleno_appv1/features/users_admin/presentation/controllers/users_admin_controller.dart';
+import 'package:mercapleno_appv1/features/users_admin/presentation/pages/users_admin_list_page.dart';
+import 'package:mercapleno_appv1/features/users_admin/presentation/pages/user_form_page.dart';
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.authController});
+  const MyApp({
+    super.key,
+    required this.authController,
+    required this.usersAdminController,
+  });
 
   final AuthController authController;
+  final UsersAdminController usersAdminController;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +35,10 @@ class MyApp extends StatelessWidget {
           }
 
           if (authController.isAuthenticated) {
-            return HomePage(controller: authController);
+            return HomePage(
+              controller: authController,
+              usersController: usersAdminController,
+            );
           }
 
           return LandingPage(controller: authController);
@@ -50,6 +61,22 @@ class MyApp extends StatelessWidget {
               builder: (_) => RegisterPage(
                 controller: args.controller,
                 prefilledEmail: args.prefilledEmail,
+              ),
+            );
+          case UsersAdminListPage.routeName:
+            return MaterialPageRoute(
+              builder: (_) => UsersAdminListPage(
+                usersController: usersAdminController,
+                authController: authController,
+              ),
+            );
+          case UserFormPage.routeName:
+            final args = settings.arguments as UserFormPageArgs;
+            return MaterialPageRoute(
+              builder: (_) => UserFormPage(
+                usersController: args.usersController,
+                authController: args.authController,
+                userToEdit: args.userToEdit,
               ),
             );
           default:
