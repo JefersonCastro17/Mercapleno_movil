@@ -1,7 +1,7 @@
 class AppConfig {
   AppConfig._();
 
-  static const String _baseUrl = 'http://192.168.128.16:4000';
+  static const String _baseUrl = 'http://192.168.1.14:4000';
 
   static String get apiBaseUrl {
     const override = String.fromEnvironment('API_BASE_URL');

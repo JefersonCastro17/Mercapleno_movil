@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:mercapleno_appv1/features/auth/presentation/controllers/auth_controller.dart';
 import '../providers/venta_provider.dart';
 import '../widgets/filter_bottom_sheet.dart';
 
@@ -40,6 +41,22 @@ class _CatalogoPageState extends State<CatalogoPage> {
           ),
           // Carrito con Badge
           _CartBadge(count: ventaProvider.cart.length),
+          // Botón de Cerrar Sesión para Clientes
+          IconButton(
+            icon: const Icon(Icons.logout_rounded),
+            onPressed: () async {
+              try {
+                await context.read<AuthController>().logout();
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error al cerrar sesión: $e')),
+                  );
+                }
+              }
+            },
+            tooltip: 'Cerrar sesión',
+          ),
         ],
       ),
       body: ventaProvider.isLoading 

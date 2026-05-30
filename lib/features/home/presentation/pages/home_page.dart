@@ -1,20 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:mercapleno_appv1/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:mercapleno_appv1/features/venta/presentation/pages/catalogo_page.dart';
+import 'package:mercapleno_appv1/features/Products/presentation/pages/admin_dashboard_page.dart';
+import 'package:mercapleno_appv1/features/Products/presentation/pages/lista_productos_page.dart';
+import 'package:mercapleno_appv1/features/Products/presentation/controllers/product_controller.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key, required this.controller});
 
   final AuthController controller;
 
-  String _welcomeRole() {
-    final user = controller.session?.user;
-    final roleLabel = user?.rol?.trim();
-    if (roleLabel != null && roleLabel.isNotEmpty) {
-      return roleLabel;
+  @override
+  Widget build(BuildContext context) {
+    final idRol = controller.session?.user.idRol ?? 3;
+
+    if (idRol == 1) {
+      return _AdminDashboard(controller: controller);
+    } else if (idRol == 2) {
+      return _EmployeeDashboard(controller: controller);
+    } else {
+      // Cliente o cualquier otro rol ingresa directo al catálogo de ventas
+      return const CatalogoPage();
     }
-    final idRol = user?.idRol;
-    return idRol != null ? 'Rol $idRol' : 'Usuario';
   }
+}
+
+ 
+// DASHBOARD DE ADMINISTRADOR
+ 
+class _AdminDashboard extends StatelessWidget {
+  const _AdminDashboard({required this.controller});
+
+  final AuthController controller;
 
   String _displayName() {
     final user = controller.session?.user;
@@ -23,7 +40,7 @@ class HomePage extends StatelessWidget {
       final parts = name.split(' ');
       return parts.first;
     }
-    return 'Usuario';
+    return 'Administrador';
   }
 
   Future<void> _logout(BuildContext context) async {
@@ -31,18 +48,8 @@ class HomePage extends StatelessWidget {
       await controller.logout();
     } catch (error) {
       if (context.mounted) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Error'),
-            content: Text('No se pudo cerrar sesión: ${error.toString()}'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cerrar'),
-              ),
-            ],
-          ),
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('No se pudo cerrar sesión: $error')),
         );
       }
     }
@@ -51,82 +58,535 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final name = _displayName();
-    final role = _welcomeRole();
+    final token = controller.session?.token ?? '';
 
     return Scaffold(
       backgroundColor: const Color(0xFFF4F7FB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF0B4A8B),
         elevation: 0,
-        title: const Text('Mercapleno'),
+        title: const Text(
+          'Mercapleno - Panel Admin',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout, color: Colors.white),
+            icon: const Icon(Icons.logout_rounded, color: Colors.white),
             onPressed: () => _logout(context),
             tooltip: 'Cerrar sesión',
           ),
         ],
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 520),
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
-              ),
-              elevation: 6,
-              child: Padding(
-                padding: const EdgeInsets.all(28),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '¡Bienvenido, $name!',
-                      style: const TextStyle(
-                        fontSize: 28,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final screenWidth = constraints.maxWidth;
+          final double padding = screenWidth > 600 ? 24.0 : 16.0;
+          final crossAxisCount = screenWidth > 600 ? 2 : 2;
+
+          return SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Cabecera con bienvenida al Administrador
+                Container(
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Color(0xFF0B4A8B), Color(0xFF1E3A5F)],
+                    ),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(32),
+                      bottomRight: Radius.circular(32),
+                    ),
+                  ),
+                  padding: EdgeInsets.fromLTRB(padding, 8, padding, padding + 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 32,
+                            backgroundColor: Colors.white.withOpacity(0.2),
+                            child: Text(
+                              name.isNotEmpty ? name[0].toUpperCase() : 'A',
+                              style: const TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '¡Bienvenido, $name!',
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFF59E0B),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: const Text(
+                                    'Administrador',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Panel de control administrativo de Mercapleno. Accede a las herramientas de catálogo y personal.',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.85),
+                          fontSize: 14,
+                          height: 1.4,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Lista de Módulos
+                Padding(
+                  padding: EdgeInsets.fromLTRB(padding, 28, padding, 16),
+                  child: const Center(
+                    child: Text(
+                      'Módulos Administrativos',
+                      style: TextStyle(
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF0B4A8B),
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Rol: $role',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        color: Color(0xFF3F5874),
+                  ),
+                ),
+
+                // Grid de módulos centrado y acotado en ancho para responsividad
+                Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 580),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: padding),
+                      child: GridView.count(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        crossAxisCount: crossAxisCount,
+                        crossAxisSpacing: 20,
+                        mainAxisSpacing: 20,
+                        childAspectRatio: 0.88,
+                        children: [
+                          _DashboardCard(
+                            title: 'Productos',
+                            description: 'Lista y edición de productos.',
+                            icon: Icons.inventory_2_rounded,
+                            color: const Color(0xFFF59E0B),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => ListaProductosPage(
+                                    controller: ProductController(),
+                                    token: token),
+                                ),
+                              );
+                            },
+                          ),
+                          
+
+
+                          _DashboardCard(
+                            title: 'Gestión Usuarios',
+                            description: 'Administración de personal, asignación de roles y permisos del sistema.',
+                            icon: Icons.manage_accounts_rounded,
+                            color: Colors.teal,
+                            onTap: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Módulo de Gestión de Usuarios próximamente')),
+                              );
+                            },
+                          ),
+                          _DashboardCard(
+                            title: 'Estadísticas',
+                            description: 'Monitoreo de ingresos, márgenes de ganancia y rendimiento diario.',
+                            icon: Icons.bar_chart_rounded,
+                            color: Colors.blueAccent,
+                            onTap: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Módulo de Estadísticas próximamente')),
+                              );
+                            },
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 24),
-                    const Text(
-                      'Ya estás autenticado. Usa el botón de abajo para cerrar sesión cuando quieras salir.',
+                  ),
+                ),
+                
+                const SizedBox(height: 24),
+                // Frase en rojo sobre optimización de píxeles
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    child: Text(
+                      '* Diseño adaptativo de píxeles activo en este dispositivo *',
                       style: TextStyle(
-                        fontSize: 16,
-                        color: Color(0xFF4F647E),
-                        height: 1.5,
+                        color: Colors.red,
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.2,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 32),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+ 
+// DASHBOARD DE EMPLEADO
+ 
+class _EmployeeDashboard extends StatelessWidget {
+  const _EmployeeDashboard({required this.controller});
+
+  final AuthController controller;
+
+  String _displayName() {
+    final user = controller.session?.user;
+    final name = user?.fullName.trim();
+    if (name != null && name.isNotEmpty) {
+      final parts = name.split(' ');
+      return parts.first;
+    }
+    return 'Empleado';
+  }
+
+  Future<void> _logout(BuildContext context) async {
+    try {
+      await controller.logout();
+    } catch (error) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('No se pudo cerrar sesión: $error')),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final name = _displayName();
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFF4F7FB),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF0B4A8B),
+        elevation: 0,
+        title: const Text(
+          'Mercapleno - Panel Empleado',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout_rounded, color: Colors.white),
+            onPressed: () => _logout(context),
+            tooltip: 'Cerrar sesión',
+          ),
+        ],
+      ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final screenWidth = constraints.maxWidth;
+          final double padding = screenWidth > 600 ? 24.0 : 16.0;
+          final crossAxisCount = screenWidth > 600 ? 2 : 2;
+
+          return SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Cabecera con bienvenida al Empleado
+                Container(
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Color(0xFF0B4A8B), Color(0xFF1E3A5F)],
+                    ),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(32),
+                      bottomRight: Radius.circular(32),
+                    ),
+                  ),
+                  padding: EdgeInsets.fromLTRB(padding, 8, padding, padding + 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 32,
+                            backgroundColor: Colors.white.withOpacity(0.2),
+                            child: Text(
+                              name.isNotEmpty ? name[0].toUpperCase() : 'E',
+                              style: const TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '¡Bienvenido, $name!',
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFF59E0B),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: const Text(
+                                    'Empleado',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Panel de operación diaria de Mercapleno. Monitorea y controla los movimientos internos.',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.85),
+                          fontSize: 14,
+                          height: 1.4,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Lista de Módulos
+                Padding(
+                  padding: EdgeInsets.fromLTRB(padding, 28, padding, 16),
+                  child: const Center(
+                    child: Text(
+                      'Módulos de Operación',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF0B4A8B),
                       ),
                     ),
-                    const SizedBox(height: 28),
-                    SizedBox(
-                      width: double.infinity,
-                      child: FilledButton(
-                        onPressed: () => _logout(context),
-                        style: FilledButton.styleFrom(
-                          backgroundColor: const Color(0xFF0B4A8B),
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                        ),
-                        child: const Text(
-                          'Cerrar sesión',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-                        ),
+                  ),
+                ),
+
+                // Grid de módulos centrado
+                Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 580),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: padding),
+                      child: GridView.count(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        crossAxisCount: crossAxisCount,
+                        crossAxisSpacing: 20,
+                        mainAxisSpacing: 20,
+                        childAspectRatio: 0.88,
+                        children: [
+                          _DashboardCard(
+                            title: 'Control Stock',
+                            description: 'Monitoreo de inventario crítico, alertas de reabastecimiento en almacenes.',
+                            icon: Icons.warehouse_rounded,
+                            color: Colors.purple,
+                            onTap: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Módulo de Control de Stock próximamente')),
+                              );
+                            },
+                          ),
+                          _DashboardCard(
+                            title: 'Centro de Reportes',
+                            description: 'Generación y exportación de informes de venta e inventario consolidados.',
+                            icon: Icons.receipt_long_rounded,
+                            color: Colors.deepOrange,
+                            onTap: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Módulo de Centro de Reportes próximamente')),
+                              );
+                            },
+                          ),
+                        ],
                       ),
+                    ),
+                  ),
+                ),
+                
+                const SizedBox(height: 24),
+                // Frase en rojo sobre optimización de píxeles
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    child: Text(
+                      '* Diseño adaptativo de píxeles activo en este dispositivo *',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.2,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 32),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+ 
+// TARJETA DE MÓDULO REUTILIZABLE (MÁS GRANDE Y REFORZADA)
+ 
+class _DashboardCard extends StatelessWidget {
+  final String title;
+  final String description;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _DashboardCard({
+    required this.title,
+    required this.description,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 6,
+      shadowColor: color.withOpacity(0.15),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(24),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0), // Padding ampliado para tarjetas más grandes
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Icono con contenedor más grande
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  icon,
+                  color: color,
+                  size: 34, // Icono más grande
+                ),
+              ),
+              const SizedBox(height: 12),
+              // Contenido de texto ampliado
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 18, // Fuente de título ampliada
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1E3A5F),
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      description,
+                      style: const TextStyle(
+                        fontSize: 12, // Fuente de descripción ampliada
+                        color: Colors.grey,
+                        height: 1.4,
+                      ),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
               ),
-            ),
+              const SizedBox(height: 8),
+              // Flecha de navegación
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(
+                    Icons.arrow_forward_rounded,
+                    color: color,
+                    size: 22, // Indicador más grande
+                  ),
+                ],
+              )
+            ],
           ),
         ),
       ),

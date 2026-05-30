@@ -6,6 +6,7 @@ import 'package:mercapleno_appv1/features/auth/presentation/pages/login_page.dar
 import 'package:mercapleno_appv1/features/auth/presentation/pages/register_page.dart';
 import 'package:mercapleno_appv1/features/home/presentation/pages/home_page.dart';
 import 'package:mercapleno_appv1/features/home/presentation/pages/landing_page.dart';
+import 'package:mercapleno_appv1/features/venta/presentation/pages/carrito_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key, required this.authController});
@@ -51,6 +52,10 @@ class MyApp extends StatelessWidget {
                 controller: args.controller,
                 prefilledEmail: args.prefilledEmail,
               ),
+            );
+          case '/carrito':
+            return MaterialPageRoute(
+              builder: (_) => const CarritoPage(),
             );
           default:
             return null;
