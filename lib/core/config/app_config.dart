@@ -1,14 +1,44 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class AppConfig {
   AppConfig._();
 
   static const String _baseUrl = 'http://192.168.1.14:4000';
 
   static String get apiBaseUrl {
+    // 1. Priorizar String.fromEnvironment para compatibilidad en despliegues
     const override = String.fromEnvironment('API_BASE_URL');
     if (override.isNotEmpty) {
       return _sanitizeBaseUrl(override);
     }
+
+    // 2. Respaldo en dotenv si el archivo existe y está cargado
+    try {
+      final envUrl = dotenv.env['API_BASE_URL'];
+      if (envUrl != null && envUrl.isNotEmpty) {
+        return _sanitizeBaseUrl(envUrl);
+      }
+    } catch (_) {}
+
     return _sanitizeBaseUrl(_baseUrl);
+  }
+
+  static String get apiKey {
+    // 1. Priorizar String.fromEnvironment
+    const key = String.fromEnvironment('INTERNAL_API_KEY');
+    if (key.isNotEmpty) {
+      return key;
+    }
+
+    // 2. Respaldo en dotenv
+    try {
+      final envKey = dotenv.env['INTERNAL_API_KEY'];
+      if (envKey != null && envKey.isNotEmpty) {
+        return envKey;
+      }
+    } catch (_) {}
+
+    return '';
   }
 
   // 🖼️ GESTIÓN DE IMÁGENES

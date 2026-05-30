@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:mercapleno_appv1/core/theme/app_theme.dart';
 import 'package:mercapleno_appv1/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:mercapleno_appv1/features/auth/presentation/pages/auth_route_args.dart';
@@ -7,6 +8,9 @@ import 'package:mercapleno_appv1/features/auth/presentation/pages/register_page.
 import 'package:mercapleno_appv1/features/home/presentation/pages/home_page.dart';
 import 'package:mercapleno_appv1/features/home/presentation/pages/landing_page.dart';
 import 'package:mercapleno_appv1/features/venta/presentation/pages/carrito_page.dart';
+import 'package:mercapleno_appv1/features/users_admin/presentation/controllers/users_admin_controller.dart';
+import 'package:mercapleno_appv1/features/users_admin/presentation/pages/users_admin_list_page.dart';
+import 'package:mercapleno_appv1/features/users_admin/presentation/pages/user_form_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key, required this.authController});
@@ -57,6 +61,22 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(
               builder: (_) => const CarritoPage(),
             );
+          case UsersAdminListPage.routeName:
+            return MaterialPageRoute(
+              builder: (context) => UsersAdminListPage(
+                usersController: Provider.of<UsersAdminController>(context, listen: false),
+                authController: Provider.of<AuthController>(context, listen: false),
+              ),
+            );
+          case UserFormPage.routeName:
+            final args = settings.arguments as UserFormPageArgs;
+            return MaterialPageRoute(
+              builder: (_) => UserFormPage(
+                usersController: args.usersController,
+                authController: args.authController,
+                userToEdit: args.userToEdit,
+              ),
+            );
           default:
             return null;
         }
@@ -100,4 +120,3 @@ class _SplashPage extends StatelessWidget {
     );
   }
 }
-

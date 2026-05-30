@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mercapleno_appv1/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:mercapleno_appv1/features/venta/presentation/pages/catalogo_page.dart';
-import 'package:mercapleno_appv1/features/Products/presentation/pages/admin_dashboard_page.dart';
 import 'package:mercapleno_appv1/features/Products/presentation/pages/lista_productos_page.dart';
 import 'package:mercapleno_appv1/features/Products/presentation/controllers/product_controller.dart';
+import 'package:mercapleno_appv1/features/users_admin/presentation/pages/users_admin_list_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key, required this.controller});
@@ -221,8 +221,9 @@ class _AdminDashboard extends StatelessWidget {
                             icon: Icons.manage_accounts_rounded,
                             color: Colors.teal,
                             onTap: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Módulo de Gestión de Usuarios próximamente')),
+                              Navigator.pushNamed(
+                                context,
+                                UsersAdminListPage.routeName,
                               );
                             },
                           ),
