@@ -73,7 +73,7 @@ class _UserFormPageState extends State<UserFormPage> {
       _selectedTipoIdentificacion = user.idTipoIdentificacion;
     } else {
       _fechaNacimientoController = TextEditingController();
-      _selectedRol = 2; // Cliente por defecto para creación.
+      _selectedRol = 3; // Cliente por defecto para creación.
       // Intentamos seleccionar el primer tipo de documento si está disponible.
       if (widget.authController.documentTypes.isNotEmpty) {
         _selectedTipoIdentificacion = widget.authController.documentTypes.first.id;
@@ -332,7 +332,11 @@ class _UserFormPageState extends State<UserFormPage> {
                       const SizedBox(height: 16),
                       // Tipo de identificación.
                       DropdownButtonFormField<int>(
-                        initialValue: _selectedTipoIdentificacion,
+                        initialValue: docTypes.any(
+                          (e) => e.id == _selectedTipoIdentificacion,
+                        )
+                            ? _selectedTipoIdentificacion
+                            : null,
                         decoration: const InputDecoration(
                           labelText: 'Tipo de identificación',
                           prefixIcon: Icon(Icons.badge_outlined),
@@ -367,7 +371,9 @@ class _UserFormPageState extends State<UserFormPage> {
                       const SizedBox(height: 16),
                       // Rol.
                       DropdownButtonFormField<int>(
-                        initialValue: _selectedRol,
+                        initialValue: [1, 2, 3].contains(_selectedRol)
+                            ? _selectedRol
+                            : null,
                         decoration: const InputDecoration(
                           labelText: 'Rol del usuario',
                           prefixIcon: Icon(Icons.admin_panel_settings_outlined),
@@ -379,6 +385,10 @@ class _UserFormPageState extends State<UserFormPage> {
                           ),
                           DropdownMenuItem<int>(
                             value: 2,
+                            child: Text('Empleado'),
+                          ),
+                          DropdownMenuItem<int>(
+                            value: 3,
                             child: Text('Cliente'),
                           ),
                         ],

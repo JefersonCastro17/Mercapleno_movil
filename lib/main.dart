@@ -8,10 +8,13 @@ import 'package:mercapleno_appv1/features/auth/presentation/controllers/auth_con
 import 'package:mercapleno_appv1/features/users_admin/data/datasources/users_admin_remote_data_source.dart';
 import 'package:mercapleno_appv1/features/users_admin/data/repositories/users_admin_repository_impl.dart';
 import 'package:mercapleno_appv1/features/users_admin/presentation/controllers/users_admin_controller.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
   // Flutter debe estar listo antes de usar plugins como SharedPreferences.
   WidgetsFlutterBinding.ensureInitialized();
+
+  await dotenv.load(fileName: '.env');
 
   final apiClient = ApiClient();
 

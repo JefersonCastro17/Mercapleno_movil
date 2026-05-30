@@ -1,18 +1,22 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class AppConfig {
   AppConfig._();
 
-  // Cambia esta URL.
-  static const String _baseUrl = 'http://192.168.1.13:4000';
+  static const String _baseUrl = 'http://192.168.1.14:4000';
 
   static String get apiBaseUrl {
-    const override = String.fromEnvironment('API_BASE_URL');
+    final envUrl = dotenv.env['API_BASE_URL'];
 
-    if (override.isNotEmpty) {
-      return _sanitizeBaseUrl(override);
+    if (envUrl != null && envUrl.isNotEmpty) {
+      return _sanitizeBaseUrl(envUrl);
     }
 
     return _baseUrl;
   }
+
+  static String get apiKey =>
+      dotenv.env['INTERNAL_API_KEY'] ?? '';
 
   // Endpoints.
   static String get authBasePath => '/api/auth';

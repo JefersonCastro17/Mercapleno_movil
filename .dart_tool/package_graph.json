@@ -10,6 +10,7 @@
         "cupertino_icons",
         "equatable",
         "flutter",
+        "flutter_dotenv",
         "fpdart",
         "http",
         "internet_connection_checker_plus",
@@ -64,6 +65,13 @@
       "name": "fpdart",
       "version": "1.2.0",
       "dependencies": []
+    },
+    {
+      "name": "flutter_dotenv",
+      "version": "5.2.1",
+      "dependencies": [
+        "flutter"
+      ]
     },
     {
       "name": "shared_preferences",

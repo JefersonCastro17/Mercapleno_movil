@@ -316,11 +316,17 @@ class ApiClient {
   }
 
   Map<String, String> _buildHeaders(Map<String, String>? headers) {
-    return <String, String>{
+    final result = <String, String>{
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       ...?headers,
     };
+
+    if (AppConfig.apiKey.isNotEmpty) {
+      result['x-api-key'] = AppConfig.apiKey;
+    }
+
+    return result;
   }
 
   Map<String, dynamic> _handleResponse(http.Response response) {

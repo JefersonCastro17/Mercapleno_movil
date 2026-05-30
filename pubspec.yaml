@@ -1,6 +1,6 @@
 name: mercapleno_appv1
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 
 version: 1.0.0+1
 
@@ -13,6 +13,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   http: ^1.5.0
   shared_preferences: ^2.5.3
+  flutter_dotenv: ^5.0.2
   fpdart: ^1.2.0
   equatable: ^2.0.8
   internet_connection_checker_plus: ^3.0.0
@@ -24,3 +25,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - .env
