@@ -333,13 +333,64 @@ class ApiClient {
       return data;
     }
 
+    final message = _extractMessageFromData(data) ?? 'Error de solicitud';
+
     throw ApiException(
-      message: data is Map<String, dynamic>
-          ? (data['message'] ?? 'Error de solicitud')
-          : 'Error desconocido',
+      message: message,
       statusCode: response.statusCode,
       data: data is Map<String, dynamic> ? data : null,
     );
+  }
+
+  String? _extractMessageFromData(dynamic data) {
+    if (data == null) return null;
+
+    if (data is String && data.trim().isNotEmpty) {
+      return data;
+    }
+
+    if (data is Map<String, dynamic>) {
+      // Common patterns: message, detail, error, errors (field -> [messages])
+      if (data.containsKey('message') && data['message'] is String) {
+        return data['message'] as String;
+      }
+      if (data.containsKey('detail') && data['detail'] is String) {
+        return data['detail'] as String;
+      }
+      if (data.containsKey('error') && data['error'] is String) {
+        return data['error'] as String;
+      }
+
+      // If `errors` is a map of field->list, join messages
+      if (data.containsKey('errors')) {
+        final errors = data['errors'];
+        if (errors is Map) {
+          final messages = <String>[];
+          for (final entry in errors.entries) {
+            final value = entry.value;
+            if (value is String) messages.add(value);
+            if (value is List) {
+              messages.addAll(value.whereType<String>());
+            }
+          }
+          if (messages.isNotEmpty) return messages.join(' ');
+        }
+        if (errors is List) {
+          return errors.whereType<String>().join(' ');
+        }
+      }
+
+      // Some APIs return field errors directly as { field: [msg] }
+      final fieldMessages = <String>[];
+      for (final entry in data.entries) {
+        final value = entry.value;
+        if (value is List) fieldMessages.addAll(value.whereType<String>());
+        if (value is String && entry.key != 'message') fieldMessages.add(value);
+      }
+      if (fieldMessages.isNotEmpty) return fieldMessages.join(' ');
+    }
+
+    return null;
   }
 
   dynamic _decodeBody(String body) {
