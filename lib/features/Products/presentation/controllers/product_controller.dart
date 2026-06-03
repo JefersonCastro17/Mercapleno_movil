@@ -15,6 +15,7 @@ class ProductController extends ChangeNotifier {
 
   List<ProductEntity> products = [];
   bool isLoading = false;
+  String errorMessage = '';
 
   ProductController({
     GetProductsUseCase? getProductsUseCase,
@@ -32,11 +33,14 @@ class ProductController extends ChangeNotifier {
 
   Future<void> loadProducts(String token) async {
     isLoading = true;
+    errorMessage = '';
     notifyListeners();
     try {
       products = await _getProductsUseCase.execute(token);
+      print("✓ Productos cargados: ${products.length}");
     } catch (e) {
-      print("Error al cargar productos: $e");
+      errorMessage = "Error al cargar productos: $e";
+      print("✗ Error al cargar productos: $e");
     } finally {
       isLoading = false;
       notifyListeners();
@@ -74,11 +78,17 @@ class ProductController extends ChangeNotifier {
         products.removeWhere((p) => p.id == id);
         notifyListeners();
       } else {
-        throw Exception("Error al eliminar producto");
+        throw Exception('El servidor no confirmó la eliminación.');
       }
     } catch (e) {
-      print("Error: $e");
-      throw Exception("Error al eliminar producto: $e");
+      String message = e.toString();
+      if (message.startsWith('Exception: ')) {
+        message = message.substring(11);
+      }
+      print('[ProductController] Error al eliminar producto: $message');
+      errorMessage = message;
+      notifyListeners();
+      throw Exception(message);
     }
   }
 }

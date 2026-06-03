@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../domain/entities/reportes_entities.dart';
 import '../controllers/reportes_controller.dart';
 import 'dart:math';
@@ -38,6 +39,13 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
       final path = await widget.controller.descargarPdf(widget.token);
       if (path != null) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('PDF guardado en: $path')));
+        // Compartir el PDF de manera inmediata
+        await SharePlus.instance.share(
+          ShareParams(
+            text: 'Reporte de Estadísticas de Ventas - Mercapleno',
+            files: [XFile(path)],
+          ),
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No se pudo descargar el PDF.')));
       }
@@ -215,8 +223,8 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
                     height: 200,
                     child: LineChart(
                       LineChartData(
-                        gridData: const FlGridData(show: true, drawVerticalLine: false),
-                        titlesData: const FlTitlesData(topTitles: AxisTitles(), rightTitles: AxisTitles()),
+                        gridData: FlGridData(show: true, drawVerticalLine: false),
+                        titlesData: FlTitlesData(topTitles: AxisTitles(), rightTitles: AxisTitles()),
                         borderData: FlBorderData(show: false),
                         lineBarsData: [
                           LineChartBarData(
@@ -224,7 +232,7 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
                             isCurved: true,
                             color: Colors.blue,
                             barWidth: 4,
-                            belowBarData: BarAreaData(show: true, color: const Color.fromRGBO(33, 150, 243, 0.2)),
+                            belowBarData: BarAreaData(show: true, color: Colors.blue.withOpacity(0.2)),
                           )
                         ],
                       ),

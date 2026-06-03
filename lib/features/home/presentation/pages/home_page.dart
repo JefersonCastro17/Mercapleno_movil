@@ -4,6 +4,12 @@ import 'package:mercapleno_appv1/features/venta/presentation/pages/catalogo_page
 import 'package:mercapleno_appv1/features/Products/presentation/pages/lista_productos_page.dart';
 import 'package:mercapleno_appv1/features/Products/presentation/controllers/product_controller.dart';
 import 'package:mercapleno_appv1/features/users_admin/presentation/pages/users_admin_list_page.dart';
+import 'package:mercapleno_appv1/features/statistics/presentation/pages/estadisticas_page.dart';
+import 'package:mercapleno_appv1/features/statistics/presentation/controllers/reportes_controller.dart';
+import 'package:mercapleno_appv1/features/statistics/domain/usecases/obtener_reportes_usecase.dart';
+import 'package:mercapleno_appv1/features/statistics/data/repositories/reportes_repository_impl.dart';
+import 'package:mercapleno_appv1/features/statistics/data/datasources/reportes_remote_datasource.dart';
+import 'package:mercapleno_appv1/core/network/api_client.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key, required this.controller});
@@ -233,8 +239,23 @@ class _AdminDashboard extends StatelessWidget {
                             icon: Icons.bar_chart_rounded,
                             color: Colors.blueAccent,
                             onTap: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Módulo de Estadísticas próximamente')),
+                              final apiClient = ApiClient();
+                              final reportesController = ReportesController(
+                                ObtenerReportesUseCase(
+                                  ReportesRepositoryImpl(
+                                    ReportesRemoteDataSource(apiClient),
+                                  ),
+                                ),
+                              );
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => EstadisticasPage(
+                                    controller: reportesController,
+                                    token: token,
+                                  ),
+                                ),
                               );
                             },
                           ),

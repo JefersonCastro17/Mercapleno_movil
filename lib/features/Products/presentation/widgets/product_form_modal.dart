@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image/image.dart' as img_lib;
+import 'package:path_provider/path_provider.dart';
 import '../../domain/entities/product_entity.dart';
 
 class ProductFormModal extends StatefulWidget {
@@ -37,8 +39,31 @@ class _ProductFormModalState extends State<ProductFormModal> {
       source: ImageSource.gallery,
     );
     if (pickedFile != null) {
-      setState(() => _selectedImage = File(pickedFile.path));
+      final path = pickedFile.path;
+      final ext = path.contains('.') ? path.split('.').last.toLowerCase() : '';
+      const allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+      if (ext.isEmpty || !allowed.contains(ext)) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Formato de imagen no válido. Use JPG, PNG, WEBP o GIF.')),
+          );
+        }
+        return;
+      }
+      setState(() => _selectedImage = File(path));
     }
+  }
+
+  Future<File> _convertImageToJpg(File input) async {
+    final bytes = await input.readAsBytes();
+    final image = img_lib.decodeImage(bytes);
+    if (image == null) throw Exception('No se pudo decodificar la imagen');
+    final jpg = img_lib.encodeJpg(image, quality: 85);
+    final tempDir = await getTemporaryDirectory();
+    final outPath = '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+    final outFile = File(outPath);
+    await outFile.writeAsBytes(jpg);
+    return outFile;
   }
 
   @override
@@ -106,8 +131,33 @@ class _ProductFormModalState extends State<ProductFormModal> {
                     child: const Text('Cancelar'),
                   ),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
+                        // validate selected image extension before sending
+                        if (_selectedImage != null) {
+                          final path = _selectedImage!.path;
+                          final ext = path.contains('.') ? path.split('.').last.toLowerCase() : '';
+                          const allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+                          if (ext.isEmpty || !allowed.contains(ext)) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Formato de imagen no válido. Use JPG, PNG, WEBP o GIF.')),
+                            );
+                            return;
+                          }
+                        }
+
+                        File? fileToSend = _selectedImage;
+                        if (_selectedImage != null) {
+                          try {
+                            fileToSend = await _convertImageToJpg(_selectedImage!);
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Error procesando la imagen. Intente otra.')),
+                            );
+                            return;
+                          }
+                        }
+
                         widget.onSave({
                           'nombre': _nombreCtrl.text,
                           'precio': _precioCtrl.text,
@@ -117,7 +167,7 @@ class _ProductFormModalState extends State<ProductFormModal> {
                               widget.producto?.idCategoria.toString() ?? '1',
                           'id_proveedor':
                               widget.producto?.idProveedor.toString() ?? '1',
-                        }, _selectedImage);
+                        }, fileToSend);
                       }
                     },
                     child: const Text('Guardar'),
