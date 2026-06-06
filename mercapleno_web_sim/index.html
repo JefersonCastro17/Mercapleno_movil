@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mercapleno – Simulación Web</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- ===== SPLASH ===== -->
+<div id="screen-splash" class="screen active">
+  <div class="splash-bg">
+    <div class="splash-center">
+      <div class="spinner"></div>
+      <p class="splash-text">Cargando Mercapleno...</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== LANDING ===== -->
+<div id="screen-landing" class="screen">
+  <div class="landing-wrapper">
+    <div class="landing-card">
+      <div class="landing-hero">
+        <span class="material-icon hero-icon">🛍️</span>
+        <h1 class="hero-title">Bienvenido a Mercapleno</h1>
+        <p class="hero-subtitle">Tu tienda local de confianza. Inicia sesión o crea tu cuenta para continuar.</p>
+      </div>
+      <p class="section-hint">Selecciona una opción para continuar</p>
+      <button class="btn-primary" onclick="App.goLogin()">Iniciar sesión</button>
+      <button class="btn-outlined" onclick="App.goRegister()">Registrarme</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== LOGIN ===== -->
+<div id="screen-login" class="screen">
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-header-top">
+          <div>
+            <h2 class="auth-title" id="login-title">Iniciar sesión</h2>
+            <p class="auth-subtitle" id="login-subtitle">Accede usando el backend actual de Mercapleno.</p>
+          </div>
+          <button class="btn-switch" onclick="App.goRegister()">
+            <span>👤</span> Registrarme
+          </button>
+        </div>
+        <div id="login-info-msg" class="msg-info hidden"></div>
+        <div id="login-error-msg" class="msg-error hidden"></div>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div id="form-login" class="auth-form">
+        <div class="field-group">
+          <label>Correo electrónico</label>
+          <div class="input-wrap">
+            <span class="input-icon">@</span>
+            <input id="login-email" type="email" placeholder="correo@mercapleno.com"/>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Contraseña</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input id="login-password" type="password" placeholder="Ingresa tu contraseña"/>
+          </div>
+        </div>
+        <button class="btn-primary" id="btn-login" onclick="App.submitLogin()">Ingresar</button>
+        <button class="btn-outlined" onclick="App.goRegister()">Crear cuenta</button>
+        <div class="link-row">
+          <button class="btn-text" onclick="App.showVerifyEmail()">Verificar correo</button>
+          <button class="btn-text" onclick="App.showForgotPassword()">Olvidé mi contraseña</button>
+        </div>
+      </div>
+
+      <!-- 2FA FORM -->
+      <div id="form-2fa" class="auth-form hidden">
+        <div class="info-box-yellow">
+          <p id="two-factor-hint">Ingresa el código enviado a tu correo. Vence en 5 minutos.</p>
+        </div>
+        <div class="field-group">
+          <label>Código de seguridad</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔑</span>
+            <input id="twofactor-code" type="number" placeholder="Ejemplo: 123456" maxlength="6"/>
+          </div>
+        </div>
+        <button class="btn-primary" id="btn-2fa" onclick="App.submit2FA()">Verificar código</button>
+        <button class="btn-outlined" onclick="App.cancelTwoFactor()">Volver al login</button>
+      </div>
+
+      <!-- VERIFY EMAIL FORM -->
+      <div id="form-verify-email" class="auth-form hidden">
+        <div class="field-group">
+          <label>Correo electrónico</label>
+          <div class="input-wrap">
+            <span class="input-icon">✉️</span>
+            <input id="verify-email" type="email"/>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Código</label>
+          <div class="input-wrap">
+            <span class="input-icon">✅</span>
+            <input id="verify-code" type="number" placeholder="6 dígitos"/>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="App.submitVerifyEmail()">Verificar correo</button>
+        <button class="btn-outlined" onclick="App.resendVerification()">Reenviar código</button>
+        <button class="btn-text" onclick="App.cancelVerify()">Volver al login</button>
+      </div>
+
+      <!-- REQUEST RESET FORM -->
+      <div id="form-request-reset" class="auth-form hidden">
+        <div class="field-group">
+          <label>Correo electrónico</label>
+          <div class="input-wrap">
+            <span class="input-icon">@</span>
+            <input id="reset-req-email" type="email"/>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="App.submitRequestReset()">Enviar código</button>
+        <button class="btn-outlined" onclick="App.cancelForgot()">Volver al login</button>
+      </div>
+
+      <!-- RESET PASSWORD FORM -->
+      <div id="form-reset-password" class="auth-form hidden">
+        <div class="field-group">
+          <label>Correo electrónico</label>
+          <div class="input-wrap">
+            <span class="input-icon">✉️</span>
+            <input id="reset-email" type="email"/>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Código</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔑</span>
+            <input id="reset-code" type="number" placeholder="6 dígitos"/>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Nueva contraseña</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input id="reset-new-pass" type="password"/>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Confirmar contraseña</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input id="reset-confirm-pass" type="password"/>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="App.submitResetPassword()">Actualizar contraseña</button>
+        <button class="btn-outlined" onclick="App.showForgotPassword()">Solicitar nuevo código</button>
+        <button class="btn-text" onclick="App.cancelForgot()">Volver al login</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== REGISTER ===== -->
+<div id="screen-register" class="screen">
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-header-top">
+          <div>
+            <h2 class="auth-title">Crear cuenta</h2>
+            <p class="auth-subtitle">Regístrate para acceder a Mercapleno.</p>
+          </div>
+          <button class="btn-switch" onclick="App.goLogin()">
+            <span>🔑</span> Iniciar sesión
+          </button>
+        </div>
+        <div id="reg-info-msg" class="msg-info hidden"></div>
+        <div id="reg-error-msg" class="msg-error hidden"></div>
+      </div>
+      <div class="auth-form">
+        <div class="field-row">
+          <div class="field-group">
+            <label>Nombre</label>
+            <div class="input-wrap"><span class="input-icon">👤</span><input id="reg-nombre" type="text" placeholder="Juan"/></div>
+          </div>
+          <div class="field-group">
+            <label>Apellido</label>
+            <div class="input-wrap"><span class="input-icon">👤</span><input id="reg-apellido" type="text" placeholder="Pérez"/></div>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Correo electrónico</label>
+          <div class="input-wrap"><span class="input-icon">@</span><input id="reg-email" type="email" placeholder="correo@mercapleno.com"/></div>
+        </div>
+        <div class="field-group">
+          <label>Contraseña</label>
+          <div class="input-wrap"><span class="input-icon">🔒</span><input id="reg-password" type="password" placeholder="Mínimo 6 caracteres"/></div>
+        </div>
+        <div class="field-group">
+          <label>Confirmar contraseña</label>
+          <div class="input-wrap"><span class="input-icon">🔒</span><input id="reg-confirm-password" type="password"/></div>
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label>Tipo de documento</label>
+            <div class="input-wrap">
+              <select id="reg-doc-type" style="border:none;background:transparent;flex:1;outline:none;font-size:14px;padding:0 4px">
+                <option value="">Cargando...</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Número de documento</label>
+            <div class="input-wrap"><span class="input-icon">🪪</span><input id="reg-doc-num" type="text" placeholder="12345678"/></div>
+          </div>
+        </div>
+        <button class="btn-primary" id="btn-register" onclick="App.submitRegister()">Crear cuenta</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HOME ADMIN ===== -->
+<div id="screen-home-admin" class="screen">
+  <div class="app-shell">
+    <header class="appbar">
+      <span class="appbar-title">Mercapleno – Panel Admin</span>
+      <button class="icon-btn" onclick="App.logout()" title="Cerrar sesión">🚪</button>
+    </header>
+    <div class="hero-banner">
+      <div class="user-avatar" id="admin-avatar">A</div>
+      <div>
+        <p class="welcome-text">¡Bienvenido, <span id="admin-name">Admin</span>!</p>
+        <span class="role-badge badge-admin">Administrador</span>
+      </div>
+    </div>
+    <p class="banner-desc">Panel de control administrativo de Mercapleno. Accede a las herramientas de catálogo y personal.</p>
+    <h3 class="modules-title">Módulos Administrativos</h3>
+    <div class="modules-grid">
+      <div class="module-card" onclick="App.goProductos()">
+        <div class="mod-icon-wrap" style="background:#FEF3C7"><span class="mod-icon">📦</span></div>
+        <h4>Productos</h4>
+        <p>Lista y edición de productos.</p>
+        <span class="mod-arrow" style="color:#F59E0B">→</span>
+      </div>
+      <div class="module-card" onclick="App.goUsersAdmin()">
+        <div class="mod-icon-wrap" style="background:#CCFBF1"><span class="mod-icon">👥</span></div>
+        <h4>Gestión Usuarios</h4>
+        <p>Administración de personal, asignación de roles y permisos del sistema.</p>
+        <span class="mod-arrow" style="color:teal">→</span>
+      </div>
+      <div class="module-card" onclick="App.showSnack('Módulo de Estadísticas próximamente')">
+        <div class="mod-icon-wrap" style="background:#DBEAFE"><span class="mod-icon">📊</span></div>
+        <h4>Estadísticas</h4>
+        <p>Monitoreo de ingresos, márgenes de ganancia y rendimiento diario.</p>
+        <span class="mod-arrow" style="color:#3B82F6">→</span>
+      </div>
+    </div>
+    <p class="pixel-note">* Diseño adaptativo de píxeles activo en este dispositivo *</p>
+  </div>
+</div>
+
+<!-- ===== HOME EMPLEADO ===== -->
+<div id="screen-home-empleado" class="screen">
+  <div class="app-shell">
+    <header class="appbar">
+      <span class="appbar-title">Mercapleno – Panel Empleado</span>
+      <button class="icon-btn" onclick="App.logout()" title="Cerrar sesión">🚪</button>
+    </header>
+    <div class="hero-banner">
+      <div class="user-avatar" id="empleado-avatar">E</div>
+      <div>
+        <p class="welcome-text">¡Bienvenido, <span id="empleado-name">Empleado</span>!</p>
+        <span class="role-badge badge-empleado">Empleado</span>
+      </div>
+    </div>
+    <p class="banner-desc">Panel de operación diaria de Mercapleno. Monitorea y controla los movimientos internos.</p>
+    <h3 class="modules-title">Módulos de Operación</h3>
+    <div class="modules-grid">
+      <div class="module-card" onclick="App.showSnack('Módulo de Control de Stock próximamente')">
+        <div class="mod-icon-wrap" style="background:#F3E8FF"><span class="mod-icon">🏭</span></div>
+        <h4>Control Stock</h4>
+        <p>Monitoreo de inventario crítico, alertas de reabastecimiento en almacenes.</p>
+        <span class="mod-arrow" style="color:purple">→</span>
+      </div>
+      <div class="module-card" onclick="App.showSnack('Módulo de Centro de Reportes próximamente')">
+        <div class="mod-icon-wrap" style="background:#FFEDD5"><span class="mod-icon">🧾</span></div>
+        <h4>Centro de Reportes</h4>
+        <p>Generación y exportación de informes de venta e inventario consolidados.</p>
+        <span class="mod-arrow" style="color:#EA580C">→</span>
+      </div>
+    </div>
+    <p class="pixel-note">* Diseño adaptativo de píxeles activo en este dispositivo *</p>
+  </div>
+</div>
+
+<!-- ===== CATÁLOGO (Cliente) ===== -->
+<div id="screen-catalogo" class="screen">
+  <div class="app-shell">
+    <header class="appbar">
+      <span class="appbar-title">MercaPleno</span>
+      <div class="appbar-actions">
+        <button class="icon-btn" onclick="App.showFilterSheet()" title="Filtros">🔧</button>
+        <div class="cart-badge-wrap" onclick="App.goCarrito()">
+          <button class="icon-btn">🛒</button>
+          <span class="cart-badge" id="cart-count" style="display:none">0</span>
+        </div>
+        <button class="icon-btn" onclick="App.logout()" title="Cerrar sesión">🚪</button>
+      </div>
+    </header>
+
+    <!-- Filter bar -->
+    <div id="filter-sheet" class="filter-sheet hidden">
+      <div class="filter-content">
+        <h3>Filtros</h3>
+        <div class="field-group">
+          <label>Categoría</label>
+          <select id="filter-cat" onchange="App.applyFilters()">
+            <option value="Todo">Todo</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label>Precio mín.</label>
+            <input id="filter-min" type="number" placeholder="0"/>
+          </div>
+          <div class="field-group">
+            <label>Precio máx.</label>
+            <input id="filter-max" type="number" placeholder="999999"/>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Buscar</label>
+          <input id="filter-search" type="text" placeholder="Nombre del producto..."/>
+        </div>
+        <button class="btn-primary" onclick="App.applyFilters()">Aplicar filtros</button>
+        <button class="btn-outlined" onclick="App.resetFilters()">Limpiar</button>
+      </div>
+    </div>
+
+    <div id="catalogo-loader" class="loader-center">
+      <div class="spinner dark"></div>
+      <p>Cargando productos...</p>
+    </div>
+    <div id="catalogo-error" class="error-center hidden">
+      <p id="catalogo-error-msg"></p>
+      <button class="btn-primary" onclick="App.loadCatalogo()">Reintentar</button>
+    </div>
+    <div id="catalogo-grid" class="product-grid hidden"></div>
+  </div>
+</div>
+
+<!-- ===== CARRITO ===== -->
+<div id="screen-carrito" class="screen">
+  <div class="app-shell">
+    <header class="appbar">
+      <button class="icon-btn" onclick="App.backToCatalogo()">←</button>
+      <span class="appbar-title">Carrito</span>
+    </header>
+    <div id="carrito-empty" class="empty-center hidden">
+      <p>🛒 Tu carrito está vacío</p>
+      <button class="btn-outlined" onclick="App.backToCatalogo()">Ver catálogo</button>
+    </div>
+    <div id="carrito-content">
+      <div id="carrito-items" class="carrito-list"></div>
+      <div class="carrito-summary">
+        <div class="summary-row"><span>Subtotal</span><span id="summary-subtotal">$0</span></div>
+        <div class="summary-row"><span>IVA (19%)</span><span id="summary-iva">$0</span></div>
+        <div class="summary-row total"><span>Total</span><span id="summary-total">$0</span></div>
+        <div class="field-group" style="margin-top:16px">
+          <label>Método de pago</label>
+          <select id="payment-method">
+            <option value="M1">Efectivo</option>
+            <option value="M2">Tarjeta débito</option>
+            <option value="M3">Tarjeta crédito</option>
+            <option value="M4">Transferencia</option>
+          </select>
+        </div>
+        <button class="btn-primary" style="margin-top:16px" onclick="App.checkout()">Procesar pago</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PRODUCTOS ADMIN ===== -->
+<div id="screen-productos" class="screen">
+  <div class="app-shell">
+    <header class="appbar">
+      <button class="icon-btn" onclick="App.backToAdmin()">←</button>
+      <span class="appbar-title">Gestión de Productos</span>
+    </header>
+    <div id="productos-loader" class="loader-center">
+      <div class="spinner dark"></div>
+    </div>
+    <div id="productos-error" class="error-center hidden">
+      <p id="productos-error-msg"></p>
+      <button class="btn-primary" onclick="App.loadProductosAdmin()">Reintentar</button>
+    </div>
+    <div id="productos-table-wrap" class="table-wrap hidden">
+      <table class="data-table" id="productos-table">
+        <thead>
+          <tr><th>#</th><th>Imagen</th><th>Nombre</th><th>Precio</th><th>Categoría</th></tr>
+        </thead>
+        <tbody id="productos-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== USUARIOS ADMIN ===== -->
+<div id="screen-users-admin" class="screen">
+  <div class="app-shell">
+    <header class="appbar">
+      <button class="icon-btn" onclick="App.backToAdmin()">←</button>
+      <span class="appbar-title">Gestión de Usuarios</span>
+    </header>
+    <div id="users-loader" class="loader-center">
+      <div class="spinner dark"></div>
+    </div>
+    <div id="users-error" class="error-center hidden">
+      <p id="users-error-msg"></p>
+      <button class="btn-primary" onclick="App.loadUsersAdmin()">Reintentar</button>
+    </div>
+    <div id="users-table-wrap" class="table-wrap hidden">
+      <table class="data-table" id="users-table">
+        <thead>
+          <tr><th>#</th><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th></tr>
+        </thead>
+        <tbody id="users-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SNACKBAR ===== -->
+<div id="snackbar" class="snackbar hidden"></div>
+
+<!-- ===== CONNECTION ERROR MODAL ===== -->
+<div id="conn-modal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-icon">🔌</div>
+    <h3 class="modal-title">Error de Conexión con el Backend</h3>
+    <div class="modal-body" id="conn-modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn-primary" onclick="App.closeConnModal()">Entendido</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
