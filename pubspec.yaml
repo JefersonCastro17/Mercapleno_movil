@@ -27,6 +27,7 @@ dependencies:
   fl_chart: ^0.68.0
   image: ^4.0.17
   share_plus: ^13.1.0
+  mobile_scanner: ^6.0.0
 
 dev_dependencies:
   flutter_test:

@@ -187,15 +187,15 @@ class _ResumenPagoSectionState extends State<_ResumenPagoSection> {
     try {
       // 1. Clonamos los items del carrito ANTES de realizar cualquier operación
       final listaProductosTicket = List<ProductoModel>.from(widget.ventaProvider.cart);
-      final double totalFinal = widget.ventaProvider.totals.finalTotal;
-      final String metodoPagoUsado = widget.ventaProvider.selectedPaymentMethod;
+      // final double totalFinal = widget.ventaProvider.totals.finalTotal;
+      // final String metodoPagoUsado = widget.ventaProvider.selectedPaymentMethod;
 
       // 2. Despachamos la venta al backend NestJS
       final result = await widget.ventaProvider.processCheckout();
 
       if (result != null && context.mounted) {
         // Mapeo seguro del ID de la transacción retornado por NestJS (insertId o id)
-        final String ticketId = (result['id'] ?? result['insertId'] ?? 'N/A').toString();
+        // final String ticketId = (result['id'] ?? result['insertId'] ?? 'N/A').toString();
 
         // 3. Redireccionamos de inmediato a la pantalla del ticket con la copia preservada
         await Navigator.pushReplacement(

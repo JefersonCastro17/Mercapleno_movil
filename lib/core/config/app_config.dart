@@ -23,6 +23,16 @@ class AppConfig {
     return _sanitizeBaseUrl(_baseUrl);
   }
 
+  static int get lowStockThreshold {
+    try {
+      final envVal = dotenv.env['LOW_STOCK_THRESHOLD'];
+      if (envVal != null) {
+        return int.tryParse(envVal) ?? 5;
+      }
+    } catch (_) {}
+    return 5;
+  }
+
   static String get apiKey {
     // 1. Priorizar String.fromEnvironment
     const key = String.fromEnvironment('INTERNAL_API_KEY');

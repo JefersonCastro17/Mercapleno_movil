@@ -10,6 +10,11 @@ import 'package:mercapleno_appv1/features/statistics/domain/usecases/obtener_rep
 import 'package:mercapleno_appv1/features/statistics/data/repositories/reportes_repository_impl.dart';
 import 'package:mercapleno_appv1/features/statistics/data/datasources/reportes_remote_datasource.dart';
 import 'package:mercapleno_appv1/core/network/api_client.dart';
+import 'package:provider/provider.dart';
+import 'package:mercapleno_appv1/features/stock/presentation/controllers/inventory_controller.dart';
+import 'package:mercapleno_appv1/features/stock/presentation/pages/inventory_page.dart';
+import 'package:mercapleno_appv1/features/stock/data/repositories/products_repository_impl.dart';
+import 'package:mercapleno_appv1/features/stock/data/datasources/products_remote_data_source.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key, required this.controller});
@@ -25,7 +30,6 @@ class HomePage extends StatelessWidget {
     } else if (idRol == 2) {
       return _EmployeeDashboard(controller: controller);
     } else {
-      // Cliente o cualquier otro rol ingresa directo al catálogo de ventas
       return const CatalogoPage();
     }
   }
@@ -94,7 +98,6 @@ class _AdminDashboard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Cabecera con bienvenida al Administrador
                 Container(
                   width: double.infinity,
                   decoration: const BoxDecoration(
@@ -173,7 +176,6 @@ class _AdminDashboard extends StatelessWidget {
                   ),
                 ),
 
-                // Lista de Módulos
                 Padding(
                   padding: EdgeInsets.fromLTRB(padding, 28, padding, 16),
                   child: const Center(
@@ -188,7 +190,6 @@ class _AdminDashboard extends StatelessWidget {
                   ),
                 ),
 
-                // Grid de módulos centrado y acotado en ancho para responsividad
                 Center(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 580),
@@ -213,14 +214,12 @@ class _AdminDashboard extends StatelessWidget {
                                 MaterialPageRoute(
                                   builder: (_) => ListaProductosPage(
                                     controller: ProductController(),
-                                    token: token),
+                                    token: token,
+                                  ),
                                 ),
                               );
                             },
                           ),
-                          
-
-
                           _DashboardCard(
                             title: 'Gestión Usuarios',
                             description: 'Administración de personal, asignación de roles y permisos del sistema.',
@@ -247,7 +246,6 @@ class _AdminDashboard extends StatelessWidget {
                                   ),
                                 ),
                               );
-
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -259,14 +257,40 @@ class _AdminDashboard extends StatelessWidget {
                               );
                             },
                           ),
+                          _DashboardCard(
+                            title: 'Control Stock',
+                            description: 'Monitoreo de inventario crítico, alertas de reabastecimiento en almacenes y registros de movimientos.',
+                            icon: Icons.warehouse_rounded,
+                            color: Colors.purple,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ChangeNotifierProvider(
+                                    create: (_) => InventoryController(
+                                      repository: ProductsRepositoryImpl(
+                                        remote: ProductsRemoteDataSource(
+                                          apiClient: ApiClient(),
+                                        ),
+                                      ),
+                                    )..loadAll(),
+                                    child: Consumer<InventoryController>(
+                                      // ✅ Fix: token eliminado — InventoryPage ya no lo recibe
+                                      builder: (context, inventoryController, child) =>
+                                          InventoryPage(controller: inventoryController),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                         ],
                       ),
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 24),
-                // Frase en rojo sobre optimización de píxeles
                 const Center(
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 24),
@@ -354,7 +378,6 @@ class _EmployeeDashboard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Cabecera con bienvenida al Empleado
                 Container(
                   width: double.infinity,
                   decoration: const BoxDecoration(
@@ -433,7 +456,6 @@ class _EmployeeDashboard extends StatelessWidget {
                   ),
                 ),
 
-                // Lista de Módulos
                 Padding(
                   padding: EdgeInsets.fromLTRB(padding, 28, padding, 16),
                   child: const Center(
@@ -448,7 +470,6 @@ class _EmployeeDashboard extends StatelessWidget {
                   ),
                 ),
 
-                // Grid de módulos centrado
                 Center(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 580),
@@ -468,8 +489,24 @@ class _EmployeeDashboard extends StatelessWidget {
                             icon: Icons.warehouse_rounded,
                             color: Colors.purple,
                             onTap: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Módulo de Control de Stock próximamente')),
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ChangeNotifierProvider(
+                                    create: (_) => InventoryController(
+                                      repository: ProductsRepositoryImpl(
+                                        remote: ProductsRemoteDataSource(
+                                          apiClient: ApiClient(),
+                                        ),
+                                      ),
+                                    )..loadAll(),
+                                    child: Consumer<InventoryController>(
+                                      // ✅ Fix: token eliminado — InventoryPage ya no lo recibe
+                                      builder: (context, inventoryController, child) =>
+                                          InventoryPage(controller: inventoryController),
+                                    ),
+                                  ),
+                                ),
                               );
                             },
                           ),
@@ -489,9 +526,8 @@ class _EmployeeDashboard extends StatelessWidget {
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 24),
-                // Frase en rojo sobre optimización de píxeles
                 const Center(
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 24),
@@ -518,7 +554,7 @@ class _EmployeeDashboard extends StatelessWidget {
 }
 
  
-// TARJETA DE MÓDULO REUTILIZABLE (MÁS GRANDE Y REFORZADA)
+// TARJETA DE MÓDULO REUTILIZABLE
  
 class _DashboardCard extends StatelessWidget {
   final String title;
@@ -540,33 +576,25 @@ class _DashboardCard extends StatelessWidget {
     return Card(
       elevation: 6,
       shadowColor: color.withOpacity(0.15),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(24),
         child: Padding(
-          padding: const EdgeInsets.all(20.0), // Padding ampliado para tarjetas más grandes
+          padding: const EdgeInsets.all(20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Icono con contenedor más grande
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  icon,
-                  color: color,
-                  size: 34, // Icono más grande
-                ),
+                child: Icon(icon, color: color, size: 34),
               ),
               const SizedBox(height: 12),
-              // Contenido de texto ampliado
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -575,7 +603,7 @@ class _DashboardCard extends StatelessWidget {
                     Text(
                       title,
                       style: const TextStyle(
-                        fontSize: 18, // Fuente de título ampliada
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF1E3A5F),
                       ),
@@ -586,7 +614,7 @@ class _DashboardCard extends StatelessWidget {
                     Text(
                       description,
                       style: const TextStyle(
-                        fontSize: 12, // Fuente de descripción ampliada
+                        fontSize: 12,
                         color: Colors.grey,
                         height: 1.4,
                       ),
@@ -597,17 +625,12 @@ class _DashboardCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              // Flecha de navegación
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Icon(
-                    Icons.arrow_forward_rounded,
-                    color: color,
-                    size: 22, // Indicador más grande
-                  ),
+                  Icon(Icons.arrow_forward_rounded, color: color, size: 22),
                 ],
-              )
+              ),
             ],
           ),
         ),
