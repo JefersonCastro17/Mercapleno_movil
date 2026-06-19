@@ -3,7 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class AppConfig {
   AppConfig._();
 
-  static const String _baseUrl = 'http://192.168.1.14:4000';
+  static const String _baseUrl = 'http://192.168.101.10:4000';
 
   static String get apiBaseUrl {
     // 1. Priorizar String.fromEnvironment para compatibilidad en despliegues

@@ -26,13 +26,21 @@ class ProductsRepositoryImpl implements ProductsRepository {
 
   @override
   Future<void> createMovement({required String productId, required int quantity, required String type, String? note}) async {
+    final parsedProductId = int.tryParse(productId);
+    if (parsedProductId == null) {
+      throw ArgumentError.value(productId, 'productId', 'El backend requiere un id de producto numerico.');
+    }
+
     final payload = {
-      'id_producto': int.tryParse(productId) ?? 0,
+      'id_producto': parsedProductId,
       'tipo_movimiento': type == 'in' ? 'ENTRADA' : 'SALIDA',
       'cantidad': quantity,
-      'id_documento': 'D1', // Default valid document type, works because db init handles empty reference documents gracefully
-      'comentario': note,
+      'id_documento': 'D1',
     };
+
+    if (note != null && note.trim().isNotEmpty) {
+      payload['comentario'] = note.trim();
+    }
 
     await _remote.createMovement(payload);
   }

@@ -108,9 +108,9 @@ class _InventoryPageState extends State<InventoryPage> {
 
     if (scanned == null || scanned.isEmpty) return;
 
-    // Buscar producto por SKU (ignorando mayúsculas)
+    // Buscar producto por SKU o ID (ignorando mayúsculas)
     final match = widget.controller.products.cast<Product?>().firstWhere(
-      (p) => (p?.sku ?? '').toLowerCase() == scanned.toLowerCase(),
+      (p) => (p?.sku ?? '').toLowerCase() == scanned.toLowerCase() || p?.id == scanned,
       orElse: () => null,
     );
 
@@ -119,7 +119,7 @@ class _InventoryPageState extends State<InventoryPage> {
     if (match == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('No se encontró producto con SKU: $scanned'),
+          content: Text('No se encontró producto con SKU o ID: $scanned'),
           backgroundColor: Colors.red,
         ),
       );
@@ -240,6 +240,7 @@ class _InventoryPageState extends State<InventoryPage> {
       // Si SÍ lo tiene como String?, déjalo tal cual.
       final matchesSearch =
           p.name.toLowerCase().contains(_searchQuery) ||
+          p.id.toLowerCase().contains(_searchQuery) ||
           (p.sku?.toLowerCase().contains(_searchQuery) ?? false);
 
       final stock = widget.controller.currentStock[p.id] ?? 0;
