@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><testsuite errors="0" failures="0" name="Inicio de Sesión en Mercpleno" skipped="0" tests="2" time="5.4" timestamp="2026-06-20 04:50:59"><testcase name="Inicio de sesión exitoso como Cliente"/><testcase name="Inicio de sesión fallido con credenciales incorrectas"/></testsuite>

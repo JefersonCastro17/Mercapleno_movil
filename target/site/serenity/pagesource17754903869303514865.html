@@ -1,0 +1,3202 @@
+<html lang='en'><head><link href='prism/prism.css' rel='stylesheet' /></head><body><script src='prism/prism.js'></script><body><div><pre><code class='language-html'>&lt;html lang="en"&gt;<br/>
+ &lt;head&gt;<br/>
+  &lt;script type="module"&gt;import { injectIntoGlobalHook } from "/@react-refresh";<br/>
+injectIntoGlobalHook(window);<br/>
+window.$RefreshReg$ = () =&gt; {};<br/>
+window.$RefreshSig$ = () =&gt; (type) =&gt; type;&lt;/script&gt;<br/>
+  &lt;script type="module" src="/@vite/client"&gt;&lt;/script&gt;<br/>
+  &lt;meta charset="UTF-8"&gt;<br/>
+  &lt;link rel="icon" type="image/svg+xml" href="/logo.svg"&gt;<br/>
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;<br/>
+  &lt;title&gt;Mercapleno&lt;/title&gt;<br/>
+  &lt;style type="text/css" data-vite-dev-id="/app/app/styles/base.css"&gt;/* 🟢 src/styles/base.css <br/>
+<br/>
+   Propósito: Contiene Variables CSS, Reset Universal, y Estilos de Componentes Universales (Navbar, Títulos, Inputs)<br/>
+*/<br/>
+<br/>
+/* === 1. VARIABLES CSS (Unificación de colores principales) === */<br/>
+:root {<br/>
+  /* Variables de Ventas (global.css) */<br/>
+  --color-principal: #0066CC; /* Azul oscuro */<br/>
+  --color-acento: #F9B300; /* Amarillo/Naranja (Botones) */<br/>
+  --color-secundario: #3faac5;<br/>
+  --color-exito: rgb(91, 228, 91);<br/>
+  --color-fondo-base: #e5e7eb; /* Fondo de Ventas */<br/>
+  --color-texto-principal: #0f1720;<br/>
+  --color-texto-secundario: #5d6b6a;<br/>
+  <br/>
+  /* Variables de Login/Registro (Colores similares a #0066CC y #FFA500) */<br/>
+  --color-portal-header: #0066CC;<br/>
+  --color-portal-acento: #FFA500;<br/>
+  --color-portal-footer: #3d4f5c;<br/>
+<br/>
+  /* Variables de CRUD (usuarioC.css) */<br/>
+  --color-crud-primary: #667eea; /* Morado/Azul */<br/>
+  --color-crud-dark: #1a1d2e; /* Sidebar oscuro */<br/>
+  --color-crud-fondo: #f0f2f5; /* Fondo del CRUD */<br/>
+}<br/>
+<br/>
+/* === 2. RESET Y BASE === */<br/>
+* { <br/>
+  box-sizing: border-box; <br/>
+  /* Usaremos font-family de Ventas para mantener consistencia general. */<br/>
+  font-family: Arial, sans-serif; <br/>
+  margin: 0; <br/>
+  padding: 0; <br/>
+}<br/>
+body { <br/>
+  /* 🔑 CORRECCIÓN: Eliminar el margen predeterminado del navegador */<br/>
+  margin: 0; <br/>
+  min-height: 100vh;<br/>
+  color: var(--color-texto-principal);<br/>
+}<br/>
+<br/>
+/* === 3. COMPONENTES UNIVERSALES (Compartidos por Venta) === */<br/>
+<br/>
+/* --- Barra de Navegación de Ventas (global.css) --- */<br/>
+.barra-navegacion {<br/>
+  background-color: var(--color-principal);<br/>
+  color: white;<br/>
+  padding: 15px;<br/>
+  display: flex;<br/>
+  justify-content: space-between;<br/>
+  align-items: center;<br/>
+}<br/>
+<br/>
+.texto-logo {<br/>
+  font-size: 18px;<br/>
+  font-weight: bold;<br/>
+}<br/>
+<br/>
+.contenedor-botones {<br/>
+  display: flex;<br/>
+}<br/>
+<br/>
+/* --- Botones de Navegación de Ventas (global.css) --- */<br/>
+.boton-nav {<br/>
+  background-color: var(--color-acento);<br/>
+  color: black;<br/>
+  padding: 8px 15px;<br/>
+  border-radius: 8px;<br/>
+  margin-left: 10px;<br/>
+  text-decoration: none;<br/>
+  font-weight: bold;<br/>
+  cursor: pointer;<br/>
+  border: none;<br/>
+  transition: opacity 0.2s;<br/>
+}<br/>
+<br/>
+.boton-nav:hover {<br/>
+  opacity: 0.8;<br/>
+}<br/>
+<br/>
+/* --- Título Principal Común de Ventas (global.css) --- */<br/>
+.titulo-principal {<br/>
+  text-align: center;<br/>
+  margin-top: 30px;<br/>
+  margin-bottom: 20px;<br/>
+  font-size: 32px;<br/>
+  color: var(--color-principal);<br/>
+}<br/>
+<br/>
+/* --- Estilos de Inputs (Unificados de login.css/registro.css) --- */<br/>
+.form-group input,<br/>
+.form-group select {<br/>
+    width: 100%;<br/>
+    padding: 12px 15px;<br/>
+    border: 1px solid #ddd;<br/>
+    border-radius: 6px;<br/>
+    font-size: 14px;<br/>
+    color: #666;<br/>
+    background-color: #fafafa;<br/>
+    transition: border-color 0.3s;<br/>
+}<br/>
+.form-group input:focus,<br/>
+.form-group select:focus {<br/>
+    outline: none;<br/>
+    border-color: var(--color-principal); /* Usamos el azul de ventas o portal */<br/>
+    background-color: white;<br/>
+}&lt;/style&gt;<br/>
+  &lt;style type="text/css" data-vite-dev-id="/app/app/styles/inventory.css"&gt;@import url("https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap");<br/>
+<br/>
+:root {<br/>
+  --catalog-ink: #11203b;<br/>
+  --catalog-muted: #5f6f87;<br/>
+  --catalog-bg: #f5f7fb;<br/>
+  --catalog-accent: #0f6cbd;<br/>
+  --catalog-accent-dark: #0b4d85;<br/>
+  --catalog-warm: #f3b126;<br/>
+  --catalog-warm-dark: #d08a00;<br/>
+  --catalog-card: rgba(255, 255, 255, 0.94);<br/>
+  --catalog-border: rgba(148, 163, 184, 0.22);<br/>
+  --catalog-shadow: 0 20px 45px rgba(15, 23, 42, 0.1);<br/>
+  --catalog-shadow-soft: 0 12px 26px rgba(15, 23, 42, 0.08);<br/>
+}<br/>
+<br/>
+.inventory-page-container {<br/>
+  font-family: "Space Grotesk", "Segoe UI", sans-serif;<br/>
+  padding: 28px 18px 70px;<br/>
+  min-height: 100vh;<br/>
+  background:<br/>
+    radial-gradient(circle at top left, rgba(15, 108, 189, 0.17), transparent 32%),<br/>
+    radial-gradient(circle at 85% 20%, rgba(243, 177, 38, 0.18), transparent 22%),<br/>
+    linear-gradient(180deg, var(--catalog-bg) 0%, #edf2f9 100%);<br/>
+}<br/>
+<br/>
+.catalog-eyebrow {<br/>
+  display: inline-block;<br/>
+  text-transform: uppercase;<br/>
+  letter-spacing: 0.22em;<br/>
+  font-size: 12px;<br/>
+  color: var(--catalog-accent-dark);<br/>
+  font-weight: 700;<br/>
+  margin-bottom: 12px;<br/>
+}<br/>
+<br/>
+.catalog-primary-btn,<br/>
+.catalog-secondary-btn {<br/>
+  border: none;<br/>
+  border-radius: 999px;<br/>
+  padding: 12px 18px;<br/>
+  font-family: inherit;<br/>
+  font-size: 0.95rem;<br/>
+  font-weight: 700;<br/>
+  cursor: pointer;<br/>
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;<br/>
+}<br/>
+<br/>
+.catalog-primary-btn {<br/>
+  background: linear-gradient(135deg, var(--catalog-accent), var(--catalog-accent-dark));<br/>
+  color: white;<br/>
+  box-shadow: 0 14px 26px rgba(15, 108, 189, 0.24);<br/>
+}<br/>
+<br/>
+.catalog-secondary-btn {<br/>
+  background: rgba(15, 32, 59, 0.06);<br/>
+  color: var(--catalog-ink);<br/>
+}<br/>
+<br/>
+.catalog-primary-btn:hover,<br/>
+.catalog-secondary-btn:hover,<br/>
+.filtros .boton-nav:hover,<br/>
+.catalog-chip:hover,<br/>
+.botoncito_producto:hover {<br/>
+  transform: translateY(-1px);<br/>
+}<br/>
+<br/>
+.catalog-header {<br/>
+  display: flex;<br/>
+  flex-wrap: wrap;<br/>
+  gap: 18px;<br/>
+  align-items: flex-end;<br/>
+  justify-content: space-between;<br/>
+  margin-bottom: 22px;<br/>
+  padding: 24px;<br/>
+  background: var(--catalog-card);<br/>
+  border: 1px solid var(--catalog-border);<br/>
+  border-radius: 24px;<br/>
+  box-shadow: var(--catalog-shadow);<br/>
+}<br/>
+<br/>
+.catalog-title h2 {<br/>
+  margin: 0 0 8px;<br/>
+  font-family: "Fraunces", Georgia, serif;<br/>
+  color: var(--catalog-ink);<br/>
+  font-size: clamp(26px, 3vw, 34px);<br/>
+}<br/>
+<br/>
+.catalog-title p {<br/>
+  margin: 0;<br/>
+  color: var(--catalog-muted);<br/>
+  max-width: 62ch;<br/>
+}<br/>
+<br/>
+.catalog-chip-row {<br/>
+  display: flex;<br/>
+  flex-wrap: wrap;<br/>
+  gap: 10px;<br/>
+}<br/>
+<br/>
+.catalog-chip {<br/>
+  background: rgba(15, 32, 59, 0.06);<br/>
+  color: var(--catalog-ink);<br/>
+  border: 1px solid transparent;<br/>
+  border-radius: 999px;<br/>
+  padding: 10px 14px;<br/>
+  font-family: inherit;<br/>
+  font-weight: 700;<br/>
+  cursor: pointer;<br/>
+  transition: all 0.2s ease;<br/>
+}<br/>
+<br/>
+.catalog-chip--active {<br/>
+  background: rgba(15, 108, 189, 0.14);<br/>
+  color: var(--catalog-accent-dark);<br/>
+  border-color: rgba(15, 108, 189, 0.18);<br/>
+}<br/>
+<br/>
+.catalog-active-filters {<br/>
+  display: flex;<br/>
+  flex-wrap: wrap;<br/>
+  gap: 12px;<br/>
+  align-items: center;<br/>
+  margin: 0 0 18px;<br/>
+  color: var(--catalog-muted);<br/>
+}<br/>
+<br/>
+.catalog-active-filters span {<br/>
+  font-size: 0.9rem;<br/>
+}<br/>
+<br/>
+.catalog-active-filters__list {<br/>
+  display: flex;<br/>
+  flex-wrap: wrap;<br/>
+  gap: 8px;<br/>
+}<br/>
+<br/>
+.catalog-active-filters__pill {<br/>
+  background: rgba(15, 108, 189, 0.1);<br/>
+  color: var(--catalog-accent-dark);<br/>
+  border-radius: 999px;<br/>
+  padding: 7px 12px;<br/>
+  font-weight: 600;<br/>
+}<br/>
+<br/>
+.filtros {<br/>
+  margin: 0 0 22px;<br/>
+  padding: 18px;<br/>
+  background: var(--catalog-card);<br/>
+  border-radius: 22px;<br/>
+  border: 1px solid var(--catalog-border);<br/>
+  box-shadow: var(--catalog-shadow);<br/>
+  display: grid;<br/>
+  gap: 14px;<br/>
+  grid-template-columns: minmax(220px, 1.4fr) repeat(3, minmax(150px, 1fr)) auto;<br/>
+  align-items: end;<br/>
+}<br/>
+<br/>
+.filter-field {<br/>
+  display: grid;<br/>
+  gap: 8px;<br/>
+}<br/>
+<br/>
+.filter-field label {<br/>
+  font-size: 0.82rem;<br/>
+  font-weight: 700;<br/>
+  color: var(--catalog-muted);<br/>
+}<br/>
+<br/>
+.filtros input,<br/>
+.filtros select {<br/>
+  min-height: 48px;<br/>
+  padding: 12px 14px;<br/>
+  border: 1px solid #d6dce7;<br/>
+  border-radius: 14px;<br/>
+  background: white;<br/>
+  font-family: inherit;<br/>
+  font-size: 0.95rem;<br/>
+  color: var(--catalog-ink);<br/>
+}<br/>
+<br/>
+.filtros input:focus,<br/>
+.filtros select:focus {<br/>
+  outline: none;<br/>
+  border-color: rgba(15, 108, 189, 0.5);<br/>
+  box-shadow: 0 0 0 4px rgba(15, 108, 189, 0.1);<br/>
+}<br/>
+<br/>
+.filter-actions {<br/>
+  display: flex;<br/>
+}<br/>
+<br/>
+.filtros .boton-nav {<br/>
+  width: 100%;<br/>
+  min-height: 48px;<br/>
+  background: linear-gradient(135deg, var(--catalog-accent), var(--catalog-accent-dark));<br/>
+  color: white;<br/>
+  border: none;<br/>
+  border-radius: 14px;<br/>
+  padding: 12px 14px;<br/>
+  cursor: pointer;<br/>
+  font-weight: 700;<br/>
+  box-shadow: 0 12px 24px rgba(15, 108, 189, 0.2);<br/>
+}<br/>
+<br/>
+.catalog-loading,<br/>
+.catalog-empty {<br/>
+  text-align: center;<br/>
+  color: var(--catalog-muted);<br/>
+  margin: 40px 0;<br/>
+}<br/>
+<br/>
+.catalog-empty-panel {<br/>
+  grid-column: 1 / -1;<br/>
+  background: var(--catalog-card);<br/>
+  border: 1px solid var(--catalog-border);<br/>
+  border-radius: 24px;<br/>
+  padding: 28px;<br/>
+  text-align: center;<br/>
+  box-shadow: var(--catalog-shadow);<br/>
+}<br/>
+<br/>
+.catalog-empty-panel h3 {<br/>
+  margin: 0 0 10px;<br/>
+  color: var(--catalog-ink);<br/>
+}<br/>
+<br/>
+.catalog-empty-panel p {<br/>
+  margin: 0 0 18px;<br/>
+  color: var(--catalog-muted);<br/>
+}<br/>
+<br/>
+.catalogo {<br/>
+  display: grid;<br/>
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));<br/>
+  align-items: stretch;<br/>
+  gap: 22px;<br/>
+}<br/>
+<br/>
+.product-card {<br/>
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.94));<br/>
+  border-radius: 22px;<br/>
+  padding: 16px;<br/>
+  border: 1px solid var(--catalog-border);<br/>
+  box-shadow: var(--catalog-shadow);<br/>
+  display: flex;<br/>
+  flex-direction: column;<br/>
+  gap: 14px;<br/>
+  min-height: 470px;<br/>
+  height: 100%;<br/>
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;<br/>
+}<br/>
+<br/>
+.product-card:hover {<br/>
+  transform: translateY(-6px);<br/>
+  box-shadow: 0 26px 48px rgba(15, 23, 42, 0.14);<br/>
+  border-color: rgba(15, 108, 189, 0.18);<br/>
+}<br/>
+<br/>
+.product-card__header,<br/>
+.product-card__meta,<br/>
+.product-card__footer {<br/>
+  display: flex;<br/>
+  align-items: center;<br/>
+  justify-content: space-between;<br/>
+  gap: 10px;<br/>
+}<br/>
+<br/>
+.product-card__category,<br/>
+.product-card__stock-badge {<br/>
+  display: inline-flex;<br/>
+  align-items: center;<br/>
+  border-radius: 999px;<br/>
+  padding: 7px 11px;<br/>
+  font-size: 0.75rem;<br/>
+  font-weight: 700;<br/>
+}<br/>
+<br/>
+.product-card__category {<br/>
+  background: rgba(15, 108, 189, 0.1);<br/>
+  color: var(--catalog-accent-dark);<br/>
+}<br/>
+<br/>
+.product-card__stock-badge {<br/>
+  background: rgba(22, 163, 74, 0.12);<br/>
+  color: #166534;<br/>
+}<br/>
+<br/>
+.product-card__stock-badge--warning {<br/>
+  background: rgba(243, 177, 38, 0.18);<br/>
+  color: #9a5b00;<br/>
+}<br/>
+<br/>
+.product-card__image {<br/>
+  width: 100%;<br/>
+  height: 220px;<br/>
+  min-height: 220px;<br/>
+  border-radius: 18px;<br/>
+  background: #f8fafc;<br/>
+  border: 1px solid rgba(226, 232, 240, 0.9);<br/>
+  display: flex;<br/>
+  align-items: center;<br/>
+  justify-content: center;<br/>
+  overflow: hidden;<br/>
+}<br/>
+<br/>
+.product-card__image img {<br/>
+  width: 100%;<br/>
+  height: 100%;<br/>
+  object-fit: contain;<br/>
+}<br/>
+<br/>
+.product-card__body {<br/>
+  display: flex;<br/>
+  flex: 1;<br/>
+  flex-direction: column;<br/>
+  gap: 10px;<br/>
+}<br/>
+<br/>
+.product-card__title {<br/>
+  margin: 0;<br/>
+  font-weight: 700;<br/>
+  color: var(--catalog-ink);<br/>
+  font-size: 1.1rem;<br/>
+  line-height: 1.3;<br/>
+  min-height: 2.86em;<br/>
+  display: -webkit-box;<br/>
+  -webkit-line-clamp: 2;<br/>
+  -webkit-box-orient: vertical;<br/>
+  overflow: hidden;<br/>
+}<br/>
+<br/>
+.product-card__description {<br/>
+  margin: 0;<br/>
+  color: var(--catalog-muted);<br/>
+  font-size: 0.92rem;<br/>
+  line-height: 1.45;<br/>
+  min-height: 4em;<br/>
+  display: -webkit-box;<br/>
+  -webkit-line-clamp: 3;<br/>
+  -webkit-box-orient: vertical;<br/>
+  overflow: hidden;<br/>
+}<br/>
+<br/>
+.product-card__meta {<br/>
+  color: var(--catalog-muted);<br/>
+  font-size: 0.83rem;<br/>
+  font-weight: 600;<br/>
+  margin-top: auto;<br/>
+}<br/>
+<br/>
+.product-card__warning {<br/>
+  margin: 0;<br/>
+  color: #9a5b00;<br/>
+  font-size: 0.84rem;<br/>
+  font-weight: 700;<br/>
+}<br/>
+<br/>
+.product-card__footer {<br/>
+  margin-top: auto;<br/>
+  align-items: flex-end;<br/>
+}<br/>
+<br/>
+.product-card__price-block {<br/>
+  display: grid;<br/>
+  gap: 4px;<br/>
+}<br/>
+<br/>
+.product-card__price-label {<br/>
+  font-size: 0.75rem;<br/>
+  text-transform: uppercase;<br/>
+  letter-spacing: 0.08em;<br/>
+  color: var(--catalog-muted);<br/>
+}<br/>
+<br/>
+.product-card__price {<br/>
+  margin: 0;<br/>
+  font-size: 1.35rem;<br/>
+  font-weight: 800;<br/>
+  color: var(--catalog-accent-dark);<br/>
+}<br/>
+<br/>
+.product-card__actions {<br/>
+  width: 100%;<br/>
+  max-width: 170px;<br/>
+}<br/>
+<br/>
+.botoncito_producto {<br/>
+  width: 100%;<br/>
+  background: linear-gradient(135deg, var(--catalog-warm), var(--catalog-warm-dark));<br/>
+  color: #172133;<br/>
+  padding: 12px 16px;<br/>
+  border-radius: 14px;<br/>
+  border: none;<br/>
+  font-weight: 800;<br/>
+  cursor: pointer;<br/>
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;<br/>
+  box-shadow: 0 12px 24px rgba(243, 177, 38, 0.24);<br/>
+}<br/>
+<br/>
+.botoncito_producto:hover {<br/>
+  filter: brightness(1.03);<br/>
+}<br/>
+<br/>
+@media (max-width: 1080px) {<br/>
+  .filtros {<br/>
+    grid-template-columns: repeat(2, minmax(0, 1fr));<br/>
+  }<br/>
+}<br/>
+<br/>
+@media (max-width: 768px) {<br/>
+  .inventory-page-container {<br/>
+    padding-inline: 14px;<br/>
+  }<br/>
+<br/>
+  .catalog-header {<br/>
+    flex-direction: column;<br/>
+    align-items: flex-start;<br/>
+  }<br/>
+<br/>
+  .filtros {<br/>
+    grid-template-columns: 1fr;<br/>
+  }<br/>
+<br/>
+  .product-card__footer {<br/>
+    flex-direction: column;<br/>
+    align-items: stretch;<br/>
+  }<br/>
+<br/>
+  .product-card__actions {<br/>
+    max-width: none;<br/>
+  }<br/>
+}<br/>
+<br/>
+@media (max-width: 520px) {<br/>
+  .catalog-header,<br/>
+  .filtros,<br/>
+  .product-card {<br/>
+    border-radius: 18px;<br/>
+  }<br/>
+<br/>
+  .catalogo {<br/>
+    grid-template-columns: 1fr;<br/>
+  }<br/>
+}<br/>
+&lt;/style&gt;<br/>
+  &lt;style type="text/css" data-vite-dev-id="/app/app/styles/cart.css"&gt;@import url("https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap");<br/>
+<br/>
+.cart-page {<br/>
+  padding: 22px 12px 56px;<br/>
+  font-family: "Space Grotesk", "Segoe UI", sans-serif;<br/>
+}<br/>
+<br/>
+.cart-page__shell {<br/>
+  width: min(1560px, 100%);<br/>
+  margin: 0 auto;<br/>
+  border: 1px solid #d8e3f2;<br/>
+  border-radius: 20px;<br/>
+  background:<br/>
+    radial-gradient(circle at 10% 0%, rgba(14, 165, 233, 0.12), transparent 36%),<br/>
+    linear-gradient(180deg, #f7faff 0%, #f8fafc 100%);<br/>
+  padding: 20px;<br/>
+}<br/>
+<br/>
+.cart-page__header {<br/>
+  display: flex;<br/>
+  justify-content: space-between;<br/>
+  align-items: center;<br/>
+  gap: 18px;<br/>
+  padding: 16px;<br/>
+  background: #ffffff;<br/>
+  border: 1px solid #dbe5f4;<br/>
+  border-radius: 14px;<br/>
+  margin-bottom: 16px;<br/>
+}<br/>
+<br/>
+.cart-page__header h1 {<br/>
+  margin: 0 0 4px;<br/>
+  font-family: "Fraunces", Georgia, serif;<br/>
+  font-size: clamp(30px, 3.4vw, 44px);<br/>
+  line-height: 1.06;<br/>
+  color: #0f172a;<br/>
+}<br/>
+<br/>
+.cart-page__header p {<br/>
+  margin: 0;<br/>
+  color: #52627e;<br/>
+}<br/>
+<br/>
+.cart-page__badge {<br/>
+  min-width: 196px;<br/>
+  text-align: right;<br/>
+  background: #f6faff;<br/>
+  border: 1px solid #dbe5f4;<br/>
+  border-radius: 12px;<br/>
+  padding: 10px 14px;<br/>
+}<br/>
+<br/>
+.cart-page__badge span {<br/>
+  color: #52627e;<br/>
+  font-size: 14px;<br/>
+}<br/>
+<br/>
+.cart-page__badge strong {<br/>
+  display: block;<br/>
+  margin-top: 2px;<br/>
+  color: #0a63d8;<br/>
+  font-size: 24px;<br/>
+  line-height: 1;<br/>
+}<br/>
+<br/>
+.cart-page__grid {<br/>
+  display: grid;<br/>
+  grid-template-columns: minmax(0, 1fr) 360px;<br/>
+  gap: 16px;<br/>
+  align-items: start;<br/>
+}<br/>
+<br/>
+.cart-list-panel {<br/>
+  min-width: 0;<br/>
+  display: grid;<br/>
+  gap: 10px;<br/>
+}<br/>
+<br/>
+.cart-list-head,<br/>
+.cart-item-row {<br/>
+  min-width: 670px;<br/>
+  display: grid;<br/>
+  grid-template-columns: minmax(300px, 1fr) 130px 170px;<br/>
+  align-items: center;<br/>
+  gap: 12px;<br/>
+}<br/>
+<br/>
+.cart-list-head {<br/>
+  padding: 10px 14px;<br/>
+  border: 1px solid #dbe5f4;<br/>
+  border-radius: 10px;<br/>
+  background: #ffffff;<br/>
+  color: #52627e;<br/>
+  text-transform: uppercase;<br/>
+  letter-spacing: 0.08em;<br/>
+  font-size: 12px;<br/>
+}<br/>
+<br/>
+.cart-list-body {<br/>
+  display: grid;<br/>
+  gap: 10px;<br/>
+  overflow-x: auto;<br/>
+  padding-bottom: 4px;<br/>
+}<br/>
+<br/>
+.cart-item-row {<br/>
+  padding: 12px 14px;<br/>
+  border: 1px solid #dbe5f4;<br/>
+  border-radius: 12px;<br/>
+  background: #ffffff;<br/>
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.05);<br/>
+}<br/>
+<br/>
+.cart-item-row__product {<br/>
+  min-width: 0;<br/>
+  display: flex;<br/>
+  align-items: center;<br/>
+  gap: 12px;<br/>
+}<br/>
+<br/>
+.cart-item-row__product img {<br/>
+  width: 64px;<br/>
+  height: 64px;<br/>
+  object-fit: cover;<br/>
+  border-radius: 10px;<br/>
+  border: 1px solid #e2eaf7;<br/>
+  flex-shrink: 0;<br/>
+}<br/>
+<br/>
+.cart-item-row__text {<br/>
+  min-width: 0;<br/>
+}<br/>
+<br/>
+.cart-item-row__name {<br/>
+  margin: 0;<br/>
+  font-weight: 700;<br/>
+  color: #0f172a;<br/>
+  overflow-wrap: break-word;<br/>
+}<br/>
+<br/>
+.cart-item-row__unit {<br/>
+  margin: 4px 0 0;<br/>
+  color: #52627e;<br/>
+  font-size: 14px;<br/>
+}<br/>
+<br/>
+.cart-item-row__qty {<br/>
+  display: flex;<br/>
+  justify-content: center;<br/>
+  align-items: center;<br/>
+  gap: 8px;<br/>
+}<br/>
+<br/>
+.cart-item-row__qty span {<br/>
+  min-width: 16px;<br/>
+  text-align: center;<br/>
+  color: #0f172a;<br/>
+  font-weight: 700;<br/>
+}<br/>
+<br/>
+.cart-item-row__qty-btn {<br/>
+  width: 32px;<br/>
+  height: 32px;<br/>
+  border-radius: 999px;<br/>
+  border: none;<br/>
+  background: #36acc3;<br/>
+  color: #fff;<br/>
+  font-weight: 700;<br/>
+  cursor: pointer;<br/>
+}<br/>
+<br/>
+.cart-item-row__qty-btn:hover {<br/>
+  background: #2f93a7;<br/>
+}<br/>
+<br/>
+.cart-item-row__subtotal {<br/>
+  text-align: right;<br/>
+}<br/>
+<br/>
+.cart-item-row__subtotal p {<br/>
+  margin: 0;<br/>
+  color: #0f172a;<br/>
+  font-weight: 700;<br/>
+  white-space: nowrap;<br/>
+}<br/>
+<br/>
+.cart-item-row__remove {<br/>
+  margin-top: 6px;<br/>
+  border: none;<br/>
+  background: transparent;<br/>
+  color: #dc3545;<br/>
+  font-size: 13px;<br/>
+  font-weight: 700;<br/>
+  cursor: pointer;<br/>
+}<br/>
+<br/>
+.cart-summary-panel {<br/>
+  position: sticky;<br/>
+  top: 14px;<br/>
+  border-radius: 14px;<br/>
+  border: 1px solid #dbe5f4;<br/>
+  background: #ffffff;<br/>
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.06);<br/>
+  padding: 14px;<br/>
+  display: grid;<br/>
+  gap: 12px;<br/>
+}<br/>
+<br/>
+.cart-summary-panel__actions {<br/>
+  display: grid;<br/>
+  gap: 8px;<br/>
+}<br/>
+<br/>
+.cart-btn {<br/>
+  width: 100%;<br/>
+  border: none;<br/>
+  border-radius: 10px;<br/>
+  padding: 10px 12px;<br/>
+  font-weight: 700;<br/>
+  cursor: pointer;<br/>
+}<br/>
+<br/>
+.cart-btn--primary {<br/>
+  background: #0a63d8;<br/>
+  color: #fff;<br/>
+}<br/>
+<br/>
+.cart-btn--danger {<br/>
+  background: #dc3545;<br/>
+  color: #fff;<br/>
+}<br/>
+<br/>
+.cart-btn--muted {<br/>
+  background: #596579;<br/>
+  color: #fff;<br/>
+}<br/>
+<br/>
+.cart-btn--pay {<br/>
+  background: #22c55e;<br/>
+  color: #052a13;<br/>
+}<br/>
+<br/>
+.cart-btn:hover {<br/>
+  filter: brightness(0.95);<br/>
+}<br/>
+<br/>
+.cart-payment-box {<br/>
+  border: 1px solid #dbe5f4;<br/>
+  border-radius: 12px;<br/>
+  background: #f8fbff;<br/>
+  padding: 12px;<br/>
+}<br/>
+<br/>
+.cart-payment-box label {<br/>
+  display: block;<br/>
+  margin-bottom: 8px;<br/>
+  color: #0f172a;<br/>
+  font-weight: 700;<br/>
+}<br/>
+<br/>
+.cart-payment-box select {<br/>
+  width: 100%;<br/>
+  padding: 10px 12px;<br/>
+  border: 1px solid #cbd5e1;<br/>
+  border-radius: 8px;<br/>
+  background: #fff;<br/>
+}<br/>
+<br/>
+.cart-totals {<br/>
+  border-top: 1px dashed #d4deec;<br/>
+  padding-top: 10px;<br/>
+  display: grid;<br/>
+  gap: 10px;<br/>
+}<br/>
+<br/>
+.cart-totals__title {<br/>
+  margin: 0;<br/>
+  font-size: 22px;<br/>
+  color: #0f172a;<br/>
+}<br/>
+<br/>
+.cart-totals__rows {<br/>
+  display: grid;<br/>
+  gap: 8px;<br/>
+}<br/>
+<br/>
+.cart-totals__row {<br/>
+  display: flex;<br/>
+  justify-content: space-between;<br/>
+  color: #52627e;<br/>
+}<br/>
+<br/>
+.cart-totals__total {<br/>
+  margin-top: 4px;<br/>
+  padding-top: 8px;<br/>
+  border-top: 1px dashed #d4deec;<br/>
+  display: flex;<br/>
+  justify-content: space-between;<br/>
+  align-items: baseline;<br/>
+}<br/>
+<br/>
+.cart-totals__total span {<br/>
+  color: #0f172a;<br/>
+  font-weight: 700;<br/>
+}<br/>
+<br/>
+.cart-totals__total strong {<br/>
+  color: #0f172a;<br/>
+  font-size: 28px;<br/>
+  line-height: 1;<br/>
+}<br/>
+<br/>
+.cart-checkout-error {<br/>
+  margin: 0;<br/>
+  text-align: center;<br/>
+  color: #dc3545;<br/>
+  font-weight: 700;<br/>
+}<br/>
+<br/>
+.cart-empty {<br/>
+  background: #ffffff;<br/>
+  border: 1px solid #dbe5f4;<br/>
+  border-radius: 14px;<br/>
+  padding: 34px 18px;<br/>
+  text-align: center;<br/>
+}<br/>
+<br/>
+.cart-empty h2 {<br/>
+  margin: 0 0 8px;<br/>
+}<br/>
+<br/>
+.cart-empty p {<br/>
+  margin: 0 0 14px;<br/>
+  color: #52627e;<br/>
+}<br/>
+<br/>
+@media (max-width: 1320px) {<br/>
+  .cart-page__grid {<br/>
+    grid-template-columns: 1fr;<br/>
+  }<br/>
+<br/>
+  .cart-summary-panel {<br/>
+    position: static;<br/>
+  }<br/>
+}<br/>
+<br/>
+@media (max-width: 860px) {<br/>
+  .cart-page__shell {<br/>
+    padding: 12px;<br/>
+  }<br/>
+<br/>
+  .cart-page__header {<br/>
+    flex-direction: column;<br/>
+    align-items: flex-start;<br/>
+  }<br/>
+<br/>
+  .cart-page__badge {<br/>
+    width: 100%;<br/>
+    text-align: left;<br/>
+  }<br/>
+<br/>
+  .cart-list-head,<br/>
+  .cart-item-row {<br/>
+    min-width: auto;<br/>
+    grid-template-columns: 1fr;<br/>
+  }<br/>
+<br/>
+  .cart-list-head {<br/>
+    display: none;<br/>
+  }<br/>
+<br/>
+  .cart-item-row__qty {<br/>
+    justify-content: flex-start;<br/>
+  }<br/>
+<br/>
+  .cart-item-row__subtotal {<br/>
+    text-align: left;<br/>
+    display: flex;<br/>
+    justify-content: space-between;<br/>
+    align-items: center;<br/>
+  }<br/>
+<br/>
+  .cart-item-row__remove {<br/>
+    margin-top: 0;<br/>
+  }<br/>
+<br/>
+  .cart-totals__total strong {<br/>
+    font-size: 24px;<br/>
+  }<br/>
+}&lt;/style&gt;<br/>
+  &lt;style type="text/css" data-vite-dev-id="/app/app/styles/ticket.css"&gt;/* 🟢 src/styles/ticket.css <br/>
+    Propósito: Estilos específicos para la vista del Ticket de Compra.<br/>
+*/<br/>
+<br/>
+.ticket-page-container {<br/>
+    padding: 0 15px; <br/>
+    max-width: 1000px;<br/>
+    margin: 0 auto;<br/>
+}<br/>
+<br/>
+/* 🟥 CLASE CONTENEDORA PRINCIPAL DEL TICKET (ticket-content) */<br/>
+.ticket-content { <br/>
+    /* MODIFICADO: Estilo visual de ticket impreso */<br/>
+    background-color: #ffffff; /* Fondo blanco limpio */<br/>
+    width: 90%;<br/>
+    max-width: 400px; /* Estrecho como un recibo real */<br/>
+    margin: 40px auto;<br/>
+    padding: 30px 20px; /* Padding ajustado */<br/>
+    border-radius: 2px;<br/>
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);<br/>
+    border: 1px solid #eee;<br/>
+    font-family: monospace; /* Fuente estilo matriz/código para autenticidad */<br/>
+    color: #333;<br/>
+    line-height: 1.5;<br/>
+}<br/>
+<br/>
+/* --- SECCIÓN ENCABEZADO Y TÍTULOS --- */<br/>
+<br/>
+.ticket-header {<br/>
+    text-align: center;<br/>
+    font-size: 1.5em;<br/>
+    margin-bottom: 5px;<br/>
+    font-weight: bold;<br/>
+}<br/>
+<br/>
+.ticket-logo {<br/>
+    text-align: center;<br/>
+    font-size: 1.1em;<br/>
+    font-weight: bold;<br/>
+    margin-bottom: 20px;<br/>
+    padding-bottom: 10px;<br/>
+    border-bottom: 1px dashed #333; /* Separador de guiones */<br/>
+}<br/>
+<br/>
+/* --- SECCIÓN DETALLES DE USUARIO Y TRANSACCIÓN --- */<br/>
+<br/>
+.ticket-details-user p {<br/>
+    margin: 3px 0;<br/>
+    font-size: 0.9em;<br/>
+}<br/>
+.ticket-details-user {<br/>
+    margin-bottom: 20px;<br/>
+    padding-bottom: 15px;<br/>
+    border-bottom: 1px dashed #333;<br/>
+}<br/>
+<br/>
+<br/>
+/* --- SECCIÓN DETALLE DE PRODUCTOS --- */<br/>
+<br/>
+.productos-titulo {<br/>
+    text-align: center;<br/>
+    margin: 20px 0 10px;<br/>
+    font-size: 0.95em;<br/>
+}<br/>
+<br/>
+.detalle-productos {<br/>
+    border-top: 1px dashed #333;<br/>
+    padding-top: 10px;<br/>
+    margin-bottom: 10px;<br/>
+}<br/>
+<br/>
+/* Estilo para las filas de detalle (Productos) */<br/>
+.producto-linea {<br/>
+    margin: 8px 0;<br/>
+    display: flex;<br/>
+    justify-content: space-between;<br/>
+    gap: 12px;<br/>
+    font-size: 0.9em;<br/>
+}<br/>
+<br/>
+.producto-nombre {<br/>
+    font-weight: 600;<br/>
+}<br/>
+<br/>
+/* --- SECCIÓN TOTALES Y FINAL --- */<br/>
+<br/>
+.ticket-totals p {<br/>
+    margin: 8px 0;<br/>
+    display: flex;<br/>
+    justify-content: space-between;<br/>
+    font-size: 1em;<br/>
+}<br/>
+<br/>
+.total-final {<br/>
+    display: flex;<br/>
+    justify-content: space-between;<br/>
+    font-size: 1.2em; /* Más grande y destacado */<br/>
+    font-weight: bold;<br/>
+    padding-top: 10px;<br/>
+    margin-top: 10px;<br/>
+    border-top: 2px solid #333; /* Línea de separación sólida para el total */<br/>
+    color: #000;<br/>
+}<br/>
+<br/>
+.agradecimiento {<br/>
+    text-align: center;<br/>
+    margin-top: 30px;<br/>
+    font-size: 0.9em;<br/>
+}<br/>
+<br/>
+<br/>
+.alinear-derecha {<br/>
+    text-align: right;<br/>
+    /* Esto es importante para que el precio no envuelva el texto */<br/>
+    white-space: nowrap; <br/>
+}<br/>
+<br/>
+/* BOTÓN DE NAVEGACIÓN */<br/>
+.volver-catalogo-btn {<br/>
+    display: block;<br/>
+    width: 100%;<br/>
+    margin: 30px auto 0;<br/>
+    padding: 10px 0;<br/>
+    text-align: center;<br/>
+    background-color: #FFA500;<br/>
+    color: white;<br/>
+    border: none;<br/>
+    border-radius: 4px;<br/>
+    font-size: 16px;<br/>
+    cursor: pointer;<br/>
+    text-decoration: none;<br/>
+    transition: background-color 0.3s;<br/>
+}<br/>
+<br/>
+.volver-catalogo-btn:hover {<br/>
+    background-color: #FF8C00;<br/>
+}<br/>
+<br/>
+.ticket-actions {<br/>
+    display: flex;<br/>
+    flex-direction: column;<br/>
+    gap: 10px;<br/>
+    margin-top: 20px;<br/>
+}<br/>
+<br/>
+.print-btn {<br/>
+    background-color: #1e40af;<br/>
+}<br/>
+<br/>
+.print-btn:hover {<br/>
+    background-color: #1e3a8a;<br/>
+}<br/>
+<br/>
+@media print {<br/>
+    body {<br/>
+        background: white;<br/>
+    }<br/>
+<br/>
+    .ticket-page-container {<br/>
+        max-width: none;<br/>
+        padding: 0;<br/>
+    }<br/>
+<br/>
+    .ticket-content {<br/>
+        width: 100%;<br/>
+        max-width: none;<br/>
+        margin: 0;<br/>
+        box-shadow: none;<br/>
+        border: none;<br/>
+    }<br/>
+<br/>
+    .ticket-actions {<br/>
+        display: none;<br/>
+    }<br/>
+}<br/>
+&lt;/style&gt;<br/>
+  &lt;style type="text/css" data-vite-dev-id="/app/app/styles/login.css"&gt;/* 🟢 src/styles/login.css <br/>
+   Propósito: Estilos específicos para la vista de Login.<br/>
+*/<br/>
+<br/>
+/* --- HEADER DE PORTAL (Recomendado mover a base.css si se usa en registro.css) --- */<br/>
+/* Por ahora se deja aquí, pero si se usa en REGISTRO y LOGIN, debe ir en BASE */<br/>
+header {<br/>
+    background-color: var(--color-portal-header);<br/>
+    padding: 15px 40px;<br/>
+    border-bottom: 4px solid var(--color-portal-acento);<br/>
+}<br/>
+.header-container {<br/>
+    display: flex;<br/>
+    justify-content: space-between;<br/>
+    align-items: center;<br/>
+    max-width: 1200px;<br/>
+    margin: 0 auto;<br/>
+}<br/>
+.logo-section {<br/>
+    display: flex;<br/>
+    align-items: center;<br/>
+    gap: 15px;<br/>
+}<br/>
+.logo-img {<br/>
+    width: 70px;<br/>
+    height: 70px;<br/>
+    object-fit: contain;<br/>
+}<br/>
+.nav-links {<br/>
+    display: flex;<br/>
+    align-items: center;<br/>
+    gap: 25px;<br/>
+}<br/>
+.portal-title {<br/>
+    color: white;<br/>
+    font-size: 26px;<br/>
+}<br/>
+.nav-btn {<br/>
+    color: white;<br/>
+    background-color: var(--color-portal-acento);<br/>
+    text-decoration: none;<br/>
+    padding: 10px 25px;<br/>
+    border-radius: 6px;<br/>
+    transition: all 0.3s ease;<br/>
+}<br/>
+.nav-btn:hover {<br/>
+    background-color: #FF8C00;<br/>
+}<br/>
+/* --- FIN HEADER DE PORTAL --- */<br/>
+<br/>
+<br/>
+main {<br/>
+    display: flex;<br/>
+    justify-content: center;<br/>
+    align-items: center;<br/>
+    min-height: calc(100vh - 200px);<br/>
+    padding: 40px 20px;<br/>
+}<br/>
+<br/>
+.form-container {<br/>
+    background-color: white;<br/>
+    padding: 50px 60px;<br/>
+    border-radius: 8px;<br/>
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);<br/>
+    width: 100%;<br/>
+    max-width: 500px;<br/>
+}<br/>
+<br/>
+.form-container h2 {<br/>
+    text-align: center;<br/>
+    font-size: 48px;<br/>
+    margin-bottom: 40px;<br/>
+}<br/>
+<br/>
+.form-group {<br/>
+    margin-bottom: 25px;<br/>
+}<br/>
+<br/>
+.form-options {<br/>
+    display: flex;<br/>
+    justify-content: space-between;<br/>
+    align-items: center;<br/>
+    margin-bottom: 30px;<br/>
+}<br/>
+<br/>
+.submit-btn {<br/>
+    width: 100%;<br/>
+    max-width: 250px;<br/>
+    display: block;<br/>
+    margin: 0 auto;<br/>
+    background-color: var(--color-portal-acento); /* Usando variable */<br/>
+    color: white;<br/>
+    padding: 14px 30px;<br/>
+    border-radius: 8px;<br/>
+}<br/>
+<br/>
+.secondary-btn {<br/>
+    width: 100%;<br/>
+    max-width: 250px;<br/>
+    display: block;<br/>
+    margin: 12px auto 0;<br/>
+    background-color: transparent;<br/>
+    color: var(--color-portal-header);<br/>
+    padding: 12px 20px;<br/>
+    border: 1px solid var(--color-portal-header);<br/>
+    border-radius: 8px;<br/>
+}<br/>
+<br/>
+.login-helper-text {<br/>
+    margin: 0 0 18px;<br/>
+    color: #4b5563;<br/>
+    font-size: 14px;<br/>
+    line-height: 1.5;<br/>
+}<br/>
+<br/>
+.login-separator {<br/>
+    display: flex;<br/>
+    align-items: center;<br/>
+    gap: 12px;<br/>
+    margin: 20px 0;<br/>
+    color: #777;<br/>
+    font-size: 14px;<br/>
+}<br/>
+<br/>
+.login-separator::before,<br/>
+.login-separator::after {<br/>
+    content: "";<br/>
+    flex: 1;<br/>
+    height: 1px;<br/>
+    background: #e5e5e5;<br/>
+}<br/>
+<br/>
+.google-login {<br/>
+    display: flex;<br/>
+    justify-content: center;<br/>
+    margin: 10px 0 25px;<br/>
+}<br/>
+<br/>
+.google-warning {<br/>
+    margin: 16px 0 24px;<br/>
+    font-size: 14px;<br/>
+    color: #a33;<br/>
+    text-align: center;<br/>
+}<br/>
+<br/>
+.register-link {<br/>
+    text-align: center;<br/>
+    margin-top: 25px;<br/>
+    padding-top: 25px;<br/>
+    border-top: 1px solid #eee;<br/>
+}<br/>
+<br/>
+footer {<br/>
+    background-color: var(--color-portal-footer);<br/>
+    height: 80px;<br/>
+    margin-top: 60px;<br/>
+}<br/>
+<br/>
+@media (max-width: 768px) {<br/>
+    .form-container {<br/>
+        padding: 30px 20px;<br/>
+    }<br/>
+}<br/>
+&lt;/style&gt;<br/>
+  &lt;style type="text/css" data-vite-dev-id="/app/app/styles/registro.css"&gt;* {<br/>
+    margin: 0;<br/>
+    padding: 0;<br/>
+    box-sizing: border-box;<br/>
+}<br/>
+<br/>
+body {<br/>
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;<br/>
+    background-color: #f5f5f5;<br/>
+}<br/>
+/* === HEADER === */<br/>
+header {<br/>
+    background-color: #0066CC;<br/>
+    padding: 15px 40px;<br/>
+    border-bottom: 4px solid #FFA500;<br/>
+}<br/>
+<br/>
+<br/>
+.header-container {<br/>
+    display: flex;<br/>
+    justify-content: space-between;<br/>
+    align-items: center;<br/>
+    max-width: 1200px;<br/>
+    margin: 0 auto;<br/>
+}<br/>
+<br/>
+.logo-section {<br/>
+    display: flex;<br/>
+    align-items: center;<br/>
+    gap: 15px;<br/>
+}<br/>
+<br/>
+.logo-img {<br/>
+    width: 70px;<br/>
+    height: 70px;<br/>
+    object-fit: contain;<br/>
+}<br/>
+<br/>
+.portal-title {<br/>
+    color: white;<br/>
+    font-size: 26px;<br/>
+    font-weight: 500;<br/>
+}<br/>
+<br/>
+/* === NAVIGATION LINKS === */<br/>
+.nav-links {<br/>
+    display: flex;<br/>
+    align-items: center;<br/>
+    gap: 25px;<br/>
+}<br/>
+<br/>
+.nav-btn {<br/>
+    color: white;<br/>
+    background-color: #FFA500;<br/>
+    text-decoration: none;<br/>
+    padding: 10px 25px;<br/>
+    border-radius: 6px;<br/>
+    font-size: 15px;<br/>
+    font-weight: 500;<br/>
+    transition: all 0.3s ease;<br/>
+}<br/>
+<br/>
+.nav-btn:hover {<br/>
+    background-color: #FF8C00;<br/>
+}<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+.message {<br/>
+    padding: 15px;<br/>
+    border-radius: 6px;<br/>
+    margin-bottom: 20px;<br/>
+    font-size: 14px;<br/>
+    font-weight: 500;<br/>
+    text-align: center;<br/>
+}<br/>
+<br/>
+.message.error {<br/>
+    background-color: #ffebee;<br/>
+    color: #c62828;<br/>
+    border: 1px solid #ef5350;<br/>
+}<br/>
+<br/>
+.message.success {<br/>
+    background-color: #e8f5e9;<br/>
+    color: #2e7d32;<br/>
+    border: 1px solid #4caf50;<br/>
+}<br/>
+<br/>
+<br/>
+<br/>
+main {<br/>
+    display: flex;<br/>
+    justify-content: center;<br/>
+    align-items: center;<br/>
+    min-height: calc(100vh - 200px);<br/>
+    padding: 40px 20px;<br/>
+}<br/>
+<br/>
+.form-container {<br/>
+    background-color: white;<br/>
+    padding: 50px 60px;<br/>
+    border-radius: 8px;<br/>
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);<br/>
+    width: 100%;<br/>
+    max-width: 600px;<br/>
+}<br/>
+<br/>
+.form-container h2 {<br/>
+    text-align: center;<br/>
+    font-size: 48px;<br/>
+    font-weight: 400;<br/>
+    margin-bottom: 40px;<br/>
+    color: #333;<br/>
+}<br/>
+<br/>
+.form-row {<br/>
+    display: grid;<br/>
+    grid-template-columns: 1fr 1fr;<br/>
+    gap: 20px;<br/>
+    margin-bottom: 20px;<br/>
+    /* Asegura que todos los elementos dentro de la fila se alineen al inicio */<br/>
+    align-items: start; <br/>
+}<br/>
+<br/>
+.form-group {<br/>
+    /* Elimina el margen inferior innecesario */<br/>
+    margin-bottom: 0; <br/>
+}<br/>
+<br/>
+.form-group label {<br/>
+    display: block;<br/>
+    margin-bottom: 8px;<br/>
+    color: #333;<br/>
+    font-size: 14px;<br/>
+    font-weight: 500;<br/>
+}<br/>
+<br/>
+.form-group input,<br/>
+.form-group select {<br/>
+    width: 100%;<br/>
+    /* CLAVE: Fuerza una altura mínima consistente (12px padding top + 12px padding bottom + 2px border = 48px total) */<br/>
+    min-height: 48px; <br/>
+    padding: 12px 15px;<br/>
+    border: 1px solid #ddd;<br/>
+    border-radius: 6px;<br/>
+    font-size: 14px;<br/>
+    color: #666;<br/>
+    background-color: #fafafa;<br/>
+    transition: border-color 0.3s;<br/>
+}<br/>
+<br/>
+.form-group input:focus,<br/>
+.form-group select:focus {<br/>
+    outline: none;<br/>
+    border-color: #0066CC;<br/>
+    background-color: white;<br/>
+}<br/>
+<br/>
+.form-group input::placeholder {<br/>
+    color: #999;<br/>
+}<br/>
+<br/>
+/* LA REGLA .date-input HA SIDO ELIMINADA PARA EVITAR CONFLICTOS DE PADDING */<br/>
+<br/>
+<br/>
+.submit-btn {<br/>
+    width: 100%;<br/>
+    max-width: 250px;<br/>
+    display: block;<br/>
+    margin: 40px auto 0;<br/>
+    background-color: #FFA500;<br/>
+    color: white;<br/>
+    border: none;<br/>
+    padding: 14px 30px;<br/>
+    border-radius: 8px;<br/>
+    font-size: 16px;<br/>
+    font-weight: 500;<br/>
+    cursor: pointer;<br/>
+    transition: background-color 0.3s;<br/>
+}<br/>
+<br/>
+.submit-btn:hover {<br/>
+    background-color: #FF8C00;<br/>
+}<br/>
+<br/>
+footer {<br/>
+    background-color: #3d4f5c;<br/>
+    height: 80px;<br/>
+    margin-top: 60px;<br/>
+}<br/>
+<br/>
+@media (max-width: 768px) {<br/>
+    .form-row {<br/>
+        grid-template-columns: 1fr;<br/>
+    }<br/>
+    <br/>
+    .form-container {<br/>
+        padding: 30px 20px;<br/>
+    }<br/>
+    <br/>
+    .form-container h2 {<br/>
+        font-size: 36px;<br/>
+    }<br/>
+}&lt;/style&gt;<br/>
+  &lt;style type="text/css" data-vite-dev-id="/app/app/styles/adminDashboard.css"&gt;@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap");<br/>
+<br/>
+.ops-shell {<br/>
+  min-height: calc(100vh - 76px);<br/>
+  padding: 24px 16px 40px;<br/>
+  background: linear-gradient(180deg, #eef4ff 0%, #f7f9fc 60%);<br/>
+  overflow-x: hidden;<br/>
+}<br/>
+<br/>
+.ops-wrap {<br/>
+  width: min(1080px, 100%);<br/>
+  margin: 0 auto;<br/>
+  display: grid;<br/>
+  gap: 16px;<br/>
+  font-family: "Manrope", "Segoe UI", sans-serif;<br/>
+  color: #0f172a;<br/>
+}<br/>
+<br/>
+.ops-header-card {<br/>
+  display: flex;<br/>
+  justify-content: space-between;<br/>
+  gap: 16px;<br/>
+  align-items: flex-start;<br/>
+  background: #ffffff;<br/>
+  border: 1px solid #dbe3ef;<br/>
+  border-radius: 14px;<br/>
+  padding: 20px;<br/>
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);<br/>
+}<br/>
+<br/>
+.ops-overline {<br/>
+  display: inline-block;<br/>
+  font-size: 12px;<br/>
+  text-transform: uppercase;<br/>
+  letter-spacing: 0.08em;<br/>
+  color: #38679f;<br/>
+  margin-bottom: 8px;<br/>
+}<br/>
+<br/>
+.ops-header-card h1 {<br/>
+  margin: 0;<br/>
+  font-size: clamp(26px, 4vw, 34px);<br/>
+  line-height: 1.1;<br/>
+}<br/>
+<br/>
+.ops-header-card p {<br/>
+  margin: 8px 0 0;<br/>
+  color: #4f5f7e;<br/>
+}<br/>
+<br/>
+.ops-header-meta {<br/>
+  display: flex;<br/>
+  flex-direction: column;<br/>
+  gap: 10px;<br/>
+  align-items: flex-end;<br/>
+}<br/>
+<br/>
+.ops-role-pill {<br/>
+  font-size: 12px;<br/>
+  font-weight: 800;<br/>
+  padding: 8px 12px;<br/>
+  border-radius: 999px;<br/>
+  border: 1px solid #cad6e8;<br/>
+  background: #f3f7ff;<br/>
+  color: #16447f;<br/>
+  white-space: nowrap;<br/>
+}<br/>
+<br/>
+.ops-role-pill.is-admin {<br/>
+  background: #fff4d7;<br/>
+  color: #7d4d00;<br/>
+  border-color: #ffd993;<br/>
+}<br/>
+<br/>
+.ops-role-pill.is-employee {<br/>
+  background: #e8f6ff;<br/>
+  color: #155074;<br/>
+  border-color: #b6ddf4;<br/>
+}<br/>
+<br/>
+.ops-logout-btn {<br/>
+  background: #dc3545;<br/>
+  color: #fff;<br/>
+  border: none;<br/>
+  border-radius: 10px;<br/>
+  padding: 10px 14px;<br/>
+  font-weight: 700;<br/>
+  cursor: pointer;<br/>
+}<br/>
+<br/>
+.ops-logout-btn:hover {<br/>
+  filter: brightness(0.95);<br/>
+}<br/>
+<br/>
+.ops-section {<br/>
+  background: #ffffff;<br/>
+  border: 1px solid #dbe3ef;<br/>
+  border-radius: 14px;<br/>
+  padding: 18px;<br/>
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);<br/>
+}<br/>
+<br/>
+.ops-section h2 {<br/>
+  margin: 0 0 12px;<br/>
+  font-size: 19px;<br/>
+}<br/>
+<br/>
+.ops-grid {<br/>
+  display: grid;<br/>
+  gap: 12px;<br/>
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));<br/>
+}<br/>
+<br/>
+.module-card {<br/>
+  border: 1px solid #d9e2ef;<br/>
+  border-radius: 12px;<br/>
+  padding: 14px;<br/>
+  display: grid;<br/>
+  gap: 10px;<br/>
+  background: #fdfefe;<br/>
+  min-width: 0;<br/>
+}<br/>
+<br/>
+.module-card.tone-inventory {<br/>
+  border-left: 5px solid #2563eb;<br/>
+}<br/>
+<br/>
+.module-card.tone-users {<br/>
+  border-left: 5px solid #7c3aed;<br/>
+}<br/>
+<br/>
+.module-card.tone-reports {<br/>
+  border-left: 5px solid #0f766e;<br/>
+}<br/>
+<br/>
+.module-top {<br/>
+  display: grid;<br/>
+  gap: 8px;<br/>
+}<br/>
+<br/>
+.module-code {<br/>
+  width: fit-content;<br/>
+  font-size: 12px;<br/>
+  font-weight: 800;<br/>
+  letter-spacing: 0.06em;<br/>
+  color: #194b8f;<br/>
+  background: #e8f1ff;<br/>
+  border-radius: 8px;<br/>
+  padding: 6px 8px;<br/>
+}<br/>
+<br/>
+.module-top h3 {<br/>
+  margin: 0;<br/>
+  font-size: 23px;<br/>
+  line-height: 1.15;<br/>
+}<br/>
+<br/>
+.module-card p {<br/>
+  margin: 0;<br/>
+  color: #4f5f7e;<br/>
+  line-height: 1.35;<br/>
+}<br/>
+<br/>
+.module-btn {<br/>
+  margin-top: 4px;<br/>
+  border: none;<br/>
+  border-radius: 10px;<br/>
+  padding: 10px 12px;<br/>
+  background: #0a63d8;<br/>
+  color: #fff;<br/>
+  font-weight: 700;<br/>
+  cursor: pointer;<br/>
+}<br/>
+<br/>
+.module-btn:hover {<br/>
+  background: #0a53b2;<br/>
+}<br/>
+<br/>
+@media (max-width: 760px) {<br/>
+  .ops-shell {<br/>
+    padding: 14px 10px 24px;<br/>
+  }<br/>
+<br/>
+  .ops-header-card {<br/>
+    flex-direction: column;<br/>
+    align-items: stretch;<br/>
+  }<br/>
+<br/>
+  .ops-header-meta {<br/>
+    align-items: flex-start;<br/>
+  }<br/>
+<br/>
+  .ops-grid {<br/>
+    grid-template-columns: 1fr;<br/>
+  }<br/>
+<br/>
+  .module-top h3 {<br/>
+    font-size: 21px;<br/>
+  }<br/>
+<br/>
+  .ops-logout-btn,<br/>
+  .module-btn {<br/>
+    width: 100%;<br/>
+  }<br/>
+}<br/>
+&lt;/style&gt;<br/>
+  &lt;style type="text/css" data-vite-dev-id="/app/app/styles/estadisticas.css"&gt;@import url("https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap");<br/>
+<br/>
+:root {<br/>
+  --ink: #0f172a;<br/>
+  --slate: #475569;<br/>
+  --muted: #94a3b8;<br/>
+  --brand: #0ea5e9;<br/>
+  --brand-deep: #0284c7;<br/>
+  --accent: #f59e0b;<br/>
+  --success: #22c55e;<br/>
+  --danger: #ef4444;<br/>
+  --card: rgba(255, 255, 255, 0.92);<br/>
+  --border: rgba(148, 163, 184, 0.25);<br/>
+  --shadow: 0 18px 45px rgba(15, 23, 42, 0.08);<br/>
+  --radius: 16px;<br/>
+}<br/>
+<br/>
+.dashboard {<br/>
+  position: relative;<br/>
+  padding: 36px 28px 80px;<br/>
+  min-height: 100vh;<br/>
+  color: var(--ink);<br/>
+  font-family: "Space Grotesk", "Segoe UI", Tahoma, sans-serif;<br/>
+  background: radial-gradient(circle at top left, rgba(14, 165, 233, 0.15), transparent 45%),<br/>
+    radial-gradient(circle at 20% 50%, rgba(245, 158, 11, 0.12), transparent 50%),<br/>
+    linear-gradient(180deg, #f8fbff 0%, #f2f6fb 100%);<br/>
+}<br/>
+<br/>
+.dashboard::before {<br/>
+  content: "";<br/>
+  position: absolute;<br/>
+  inset: 0;<br/>
+  background: url("data:image/svg+xml,%3Csvg width='64' height='64' viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 32h64' stroke='%23e2e8f0' stroke-width='1'/%3E%3Cpath d='M32 0v64' stroke='%23e2e8f0' stroke-width='1'/%3E%3C/svg%3E");<br/>
+  opacity: 0.3;<br/>
+  pointer-events: none;<br/>
+}<br/>
+<br/>
+.dashboard &gt; * {<br/>
+  position: relative;<br/>
+  z-index: 1;<br/>
+}<br/>
+<br/>
+.dashboard-header {<br/>
+  display: flex;<br/>
+  flex-wrap: wrap;<br/>
+  gap: 20px;<br/>
+  align-items: flex-end;<br/>
+  justify-content: space-between;<br/>
+  margin-bottom: 26px;<br/>
+}<br/>
+<br/>
+.header-text h1 {<br/>
+  font-family: "Fraunces", Georgia, serif;<br/>
+  font-size: clamp(28px, 3vw, 38px);<br/>
+  margin: 6px 0;<br/>
+}<br/>
+<br/>
+.eyebrow {<br/>
+  text-transform: uppercase;<br/>
+  font-size: 12px;<br/>
+  letter-spacing: 0.24em;<br/>
+  color: var(--brand-deep);<br/>
+  font-weight: 600;<br/>
+}<br/>
+<br/>
+.subtitle {<br/>
+  margin: 0;<br/>
+  color: var(--slate);<br/>
+}<br/>
+<br/>
+.header-actions {<br/>
+  display: flex;<br/>
+  flex-wrap: wrap;<br/>
+  gap: 12px;<br/>
+}<br/>
+<br/>
+.btn-primary,<br/>
+.btn-secondary,<br/>
+.btn-ghost {<br/>
+  border-radius: 999px;<br/>
+  border: 1px solid transparent;<br/>
+  padding: 10px 18px;<br/>
+  font-weight: 600;<br/>
+  cursor: pointer;<br/>
+  transition: transform 0.2s ease, box-shadow 0.2s ease;<br/>
+}<br/>
+<br/>
+.btn-primary {<br/>
+  background: linear-gradient(135deg, var(--brand), var(--brand-deep));<br/>
+  color: white;<br/>
+  box-shadow: 0 10px 25px rgba(14, 165, 233, 0.25);<br/>
+  text-decoration: none;<br/>
+  display: inline-flex;<br/>
+  align-items: center;<br/>
+  justify-content: center;<br/>
+}<br/>
+<br/>
+.btn-secondary {<br/>
+  background: white;<br/>
+  border-color: var(--border);<br/>
+  color: var(--ink);<br/>
+}<br/>
+<br/>
+.btn-ghost {<br/>
+  background: transparent;<br/>
+  border-color: transparent;<br/>
+  color: var(--slate);<br/>
+}<br/>
+<br/>
+.btn-primary:hover,<br/>
+.btn-secondary:hover,<br/>
+.btn-ghost:hover {<br/>
+  transform: translateY(-2px);<br/>
+}<br/>
+<br/>
+.filter-card {<br/>
+  background: var(--card);<br/>
+  border: 1px solid var(--border);<br/>
+  border-radius: var(--radius);<br/>
+  padding: 18px;<br/>
+  display: flex;<br/>
+  flex-wrap: wrap;<br/>
+  gap: 18px;<br/>
+  align-items: flex-end;<br/>
+  margin-bottom: 24px;<br/>
+  box-shadow: var(--shadow);<br/>
+}<br/>
+<br/>
+.filter-field {<br/>
+  display: flex;<br/>
+  flex-direction: column;<br/>
+  gap: 6px;<br/>
+  min-width: 180px;<br/>
+}<br/>
+<br/>
+.filter-field label {<br/>
+  font-size: 13px;<br/>
+  color: var(--slate);<br/>
+}<br/>
+<br/>
+.filter-field input {<br/>
+  padding: 10px 12px;<br/>
+  border-radius: 12px;<br/>
+  border: 1px solid var(--border);<br/>
+  font-family: inherit;<br/>
+}<br/>
+<br/>
+.loading {<br/>
+  text-align: center;<br/>
+  margin: 60px 0;<br/>
+  font-weight: 600;<br/>
+  color: var(--slate);<br/>
+}<br/>
+<br/>
+.kpi-grid {<br/>
+  display: grid;<br/>
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));<br/>
+  gap: 18px;<br/>
+  margin-bottom: 24px;<br/>
+}<br/>
+<br/>
+.kpi-card {<br/>
+  background: var(--card);<br/>
+  border: 1px solid var(--border);<br/>
+  border-radius: var(--radius);<br/>
+  padding: 18px;<br/>
+  box-shadow: var(--shadow);<br/>
+  animation: rise 0.45s ease;<br/>
+}<br/>
+<br/>
+.kpi-card h3 {<br/>
+  margin: 8px 0;<br/>
+  font-size: 26px;<br/>
+  color: var(--ink);<br/>
+}<br/>
+<br/>
+.kpi-title {<br/>
+  color: var(--slate);<br/>
+  font-size: 13px;<br/>
+  margin: 0;<br/>
+}<br/>
+<br/>
+.kpi-sub {<br/>
+  color: var(--muted);<br/>
+  font-size: 12px;<br/>
+}<br/>
+<br/>
+.insights {<br/>
+  display: grid;<br/>
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));<br/>
+  gap: 16px;<br/>
+  margin-bottom: 26px;<br/>
+}<br/>
+<br/>
+.insight {<br/>
+  background: rgba(255, 255, 255, 0.6);<br/>
+  border: 1px dashed rgba(148, 163, 184, 0.4);<br/>
+  border-radius: 14px;<br/>
+  padding: 14px 16px;<br/>
+  display: flex;<br/>
+  flex-direction: column;<br/>
+  gap: 6px;<br/>
+}<br/>
+<br/>
+.insight strong {<br/>
+  font-size: 18px;<br/>
+}<br/>
+<br/>
+.insight-label {<br/>
+  font-size: 12px;<br/>
+  text-transform: uppercase;<br/>
+  letter-spacing: 0.12em;<br/>
+  color: var(--brand-deep);<br/>
+}<br/>
+<br/>
+.grid {<br/>
+  display: grid;<br/>
+  grid-template-columns: repeat(3, minmax(0, 1fr));<br/>
+  gap: 22px;<br/>
+}<br/>
+<br/>
+.card {<br/>
+  background: var(--card);<br/>
+  border: 1px solid var(--border);<br/>
+  border-radius: var(--radius);<br/>
+  padding: 18px;<br/>
+  box-shadow: var(--shadow);<br/>
+  display: flex;<br/>
+  flex-direction: column;<br/>
+  gap: 12px;<br/>
+  min-height: 360px;<br/>
+}<br/>
+<br/>
+.card-header h2 {<br/>
+  margin: 0;<br/>
+  font-size: 18px;<br/>
+}<br/>
+<br/>
+.card-sub {<br/>
+  font-size: 13px;<br/>
+  color: var(--slate);<br/>
+}<br/>
+<br/>
+.card-body {<br/>
+  flex: 1;<br/>
+}<br/>
+<br/>
+.span-2 {<br/>
+  grid-column: span 2;<br/>
+}<br/>
+<br/>
+.empty-state {<br/>
+  height: 100%;<br/>
+  min-height: 240px;<br/>
+  display: grid;<br/>
+  place-items: center;<br/>
+  color: var(--muted);<br/>
+  border: 1px dashed rgba(148, 163, 184, 0.4);<br/>
+  border-radius: 14px;<br/>
+}<br/>
+<br/>
+.table-wrap {<br/>
+  overflow-x: auto;<br/>
+}<br/>
+<br/>
+table {<br/>
+  width: 100%;<br/>
+  border-collapse: collapse;<br/>
+  background: white;<br/>
+  border-radius: 12px;<br/>
+  overflow: hidden;<br/>
+}<br/>
+<br/>
+th,<br/>
+td {<br/>
+  padding: 12px;<br/>
+  text-align: center;<br/>
+  border-bottom: 1px solid var(--border);<br/>
+}<br/>
+<br/>
+th {<br/>
+  background: #0f172a;<br/>
+  color: white;<br/>
+  font-weight: 600;<br/>
+}<br/>
+<br/>
+tr:nth-child(even) td {<br/>
+  background: #f8fafc;<br/>
+}<br/>
+<br/>
+@keyframes rise {<br/>
+  from {<br/>
+    opacity: 0;<br/>
+    transform: translateY(10px);<br/>
+  }<br/>
+  to {<br/>
+    opacity: 1;<br/>
+    transform: translateY(0);<br/>
+  }<br/>
+}<br/>
+<br/>
+@media (max-width: 1100px) {<br/>
+  .grid {<br/>
+    grid-template-columns: repeat(2, minmax(0, 1fr));<br/>
+  }<br/>
+  .span-2 {<br/>
+    grid-column: span 2;<br/>
+  }<br/>
+}<br/>
+<br/>
+@media (max-width: 820px) {<br/>
+  .dashboard {<br/>
+    padding: 24px 16px 64px;<br/>
+  }<br/>
+  .grid {<br/>
+    grid-template-columns: 1fr;<br/>
+  }<br/>
+  .span-2 {<br/>
+    grid-column: span 1;<br/>
+  }<br/>
+  .header-actions {<br/>
+    width: 100%;<br/>
+  }<br/>
+  .btn-primary,<br/>
+  .btn-secondary {<br/>
+    flex: 1;<br/>
+    justify-content: center;<br/>
+  }<br/>
+}<br/>
+&lt;/style&gt;<br/>
+  &lt;style type="text/css" data-vite-dev-id="/app/app/styles/usuarioC.css"&gt;:root {<br/>
+  --primary: #2563eb;<br/>
+  --success: #16a34a;<br/>
+  --danger: #dc2626;<br/>
+  --bg: #f1f5f9;<br/>
+}<br/>
+<br/>
+.container {<br/>
+  min-height: 100vh;<br/>
+  background: var(--bg);<br/>
+  font-family: 'Segoe UI', sans-serif;<br/>
+}<br/>
+<br/>
+.main {<br/>
+  padding: 30px;<br/>
+}<br/>
+<br/>
+.controles {<br/>
+  display: flex;<br/>
+  gap: 15px;<br/>
+  margin-bottom: 20px;<br/>
+}<br/>
+<br/>
+.input-busqueda {<br/>
+  padding: 10px;<br/>
+  border-radius: 8px;<br/>
+  border: 2px solid #e5e7eb;<br/>
+  flex: 1;<br/>
+}<br/>
+<br/>
+.btn-crear {<br/>
+  background: var(--success);<br/>
+  color: white;<br/>
+  border: none;<br/>
+  border-radius: 8px;<br/>
+  padding: 12px 24px;<br/>
+  font-weight: 600;<br/>
+  cursor: pointer;<br/>
+}<br/>
+<br/>
+.tabla-container {<br/>
+  background: white;<br/>
+  border-radius: 10px;<br/>
+  overflow: hidden;<br/>
+}<br/>
+<br/>
+.tabla {<br/>
+  width: 100%;<br/>
+  border-collapse: collapse;<br/>
+}<br/>
+<br/>
+.thead-row {<br/>
+  background: var(--primary);<br/>
+}<br/>
+<br/>
+.th {<br/>
+  color: white;<br/>
+  padding: 14px;<br/>
+}<br/>
+<br/>
+.td {<br/>
+  padding: 12px;<br/>
+  text-align: center;<br/>
+}<br/>
+<br/>
+.tbody-row:hover {<br/>
+  background: #eef2ff;<br/>
+}<br/>
+<br/>
+.btn-modificar {<br/>
+  background: var(--primary);<br/>
+  color: white;<br/>
+  border: none;<br/>
+  padding: 6px 14px;<br/>
+  border-radius: 20px;<br/>
+  margin-right: 6px;<br/>
+}<br/>
+<br/>
+.btn-eliminar {<br/>
+  background: var(--danger);<br/>
+  color: white;<br/>
+  border: none;<br/>
+  padding: 6px 14px;<br/>
+  border-radius: 20px;<br/>
+}<br/>
+<br/>
+.badge {<br/>
+  padding: 6px 14px;<br/>
+  border-radius: 20px;<br/>
+  font-size: 12px;<br/>
+  color: white;<br/>
+}<br/>
+<br/>
+.badge.admin { background: var(--danger); }<br/>
+.badge.empleado { background: var(--primary); }<br/>
+.badge.cliente { background: var(--success); }<br/>
+<br/>
+.toast {<br/>
+  position: fixed;<br/>
+  top: 20px;<br/>
+  right: 20px;<br/>
+  padding: 16px 24px;<br/>
+  color: white;<br/>
+  border-radius: 10px;<br/>
+  font-weight: 600;<br/>
+  z-index: 2000;<br/>
+}<br/>
+<br/>
+.toast.success { background: var(--success); }<br/>
+.toast.error { background: var(--danger); }<br/>
+<br/>
+.modal-overlay {<br/>
+  position: fixed;<br/>
+  inset: 0;<br/>
+  background: rgba(0,0,0,.6);<br/>
+  display: flex;<br/>
+  align-items: center;<br/>
+  justify-content: center;<br/>
+}<br/>
+<br/>
+.modal-content {<br/>
+  background: white;<br/>
+  border-radius: 14px;<br/>
+  width: 500px;<br/>
+  padding: 20px;<br/>
+}<br/>
+&lt;/style&gt;<br/>
+  &lt;style type="text/css" data-vite-dev-id="/app/app/styles/adminProducts.css"&gt;@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap");<br/>
+<br/>
+.products-shell {<br/>
+  min-height: calc(100vh - 76px);<br/>
+  padding: 24px 16px 40px;<br/>
+  background: linear-gradient(180deg, #eef4ff 0%, #f7f9fc 60%);<br/>
+}<br/>
+<br/>
+.products-wrap {<br/>
+  width: min(1140px, 100%);<br/>
+  margin: 0 auto;<br/>
+  display: grid;<br/>
+  gap: 16px;<br/>
+  font-family: "Manrope", "Segoe UI", sans-serif;<br/>
+  color: #0f172a;<br/>
+}<br/>
+<br/>
+.products-header-card,<br/>
+.products-toolbar,<br/>
+.products-section {<br/>
+  background: #ffffff;<br/>
+  border: 1px solid #dbe3ef;<br/>
+  border-radius: 14px;<br/>
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);<br/>
+}<br/>
+<br/>
+.products-header-card {<br/>
+  display: flex;<br/>
+  justify-content: space-between;<br/>
+  align-items: flex-start;<br/>
+  gap: 16px;<br/>
+  padding: 20px;<br/>
+}<br/>
+<br/>
+.products-overline,<br/>
+.products-modal__eyebrow {<br/>
+  display: inline-block;<br/>
+  font-size: 12px;<br/>
+  text-transform: uppercase;<br/>
+  letter-spacing: 0.08em;<br/>
+  color: #38679f;<br/>
+  margin-bottom: 8px;<br/>
+}<br/>
+<br/>
+.products-header-card h1,<br/>
+.products-modal h2 {<br/>
+  margin: 0;<br/>
+  font-size: clamp(26px, 4vw, 34px);<br/>
+  line-height: 1.1;<br/>
+}<br/>
+<br/>
+.products-header-card p {<br/>
+  margin: 8px 0 0;<br/>
+  color: #4f5f7e;<br/>
+  max-width: 62ch;<br/>
+}<br/>
+<br/>
+.products-header-actions {<br/>
+  display: flex;<br/>
+  flex-wrap: wrap;<br/>
+  gap: 10px;<br/>
+}<br/>
+<br/>
+.products-toolbar {<br/>
+  display: grid;<br/>
+  grid-template-columns: minmax(260px, 1.5fr) minmax(180px, 220px) minmax(120px, 150px);<br/>
+  gap: 14px;<br/>
+  align-items: end;<br/>
+  padding: 18px;<br/>
+}<br/>
+<br/>
+.products-toolbar__field {<br/>
+  display: grid;<br/>
+  gap: 8px;<br/>
+}<br/>
+<br/>
+.products-toolbar__field--grow {<br/>
+  min-width: 0;<br/>
+}<br/>
+<br/>
+.products-toolbar__field label {<br/>
+  font-size: 13px;<br/>
+  font-weight: 700;<br/>
+  color: #4f5f7e;<br/>
+}<br/>
+<br/>
+.products-toolbar__field input,<br/>
+.products-toolbar__field select,<br/>
+.products-modal__field input,<br/>
+.products-modal__field textarea,<br/>
+.products-modal__field select {<br/>
+  width: 100%;<br/>
+  min-height: 46px;<br/>
+  padding: 11px 13px;<br/>
+  border: 1px solid #d7e0ec;<br/>
+  border-radius: 12px;<br/>
+  background: #fff;<br/>
+  font: inherit;<br/>
+  color: #0f172a;<br/>
+}<br/>
+<br/>
+.products-toolbar__field input:focus,<br/>
+.products-toolbar__field select:focus,<br/>
+.products-modal__field input:focus,<br/>
+.products-modal__field textarea:focus,<br/>
+.products-modal__field select:focus {<br/>
+  outline: none;<br/>
+  border-color: #7da7dc;<br/>
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);<br/>
+}<br/>
+<br/>
+.products-toolbar__summary {<br/>
+  min-height: 46px;<br/>
+  display: grid;<br/>
+  align-content: center;<br/>
+  justify-items: center;<br/>
+  border: 1px solid #d7e0ec;<br/>
+  border-radius: 12px;<br/>
+  background: #f8fbff;<br/>
+}<br/>
+<br/>
+.products-toolbar__summary span {<br/>
+  font-size: 1.3rem;<br/>
+  font-weight: 800;<br/>
+  color: #1f4d88;<br/>
+  line-height: 1;<br/>
+}<br/>
+<br/>
+.products-toolbar__summary small {<br/>
+  color: #59708f;<br/>
+}<br/>
+<br/>
+.products-section {<br/>
+  padding: 18px;<br/>
+}<br/>
+<br/>
+.products-state,<br/>
+.products-empty {<br/>
+  margin: 0;<br/>
+  padding: 28px 18px;<br/>
+  text-align: center;<br/>
+  border-radius: 12px;<br/>
+  background: #f8fbff;<br/>
+  color: #4f5f7e;<br/>
+}<br/>
+<br/>
+.products-state--error {<br/>
+  background: #fff1f2;<br/>
+  color: #be123c;<br/>
+}<br/>
+<br/>
+.products-empty h2 {<br/>
+  margin: 0 0 8px;<br/>
+  font-size: 1.1rem;<br/>
+}<br/>
+<br/>
+.products-empty p {<br/>
+  margin: 0;<br/>
+}<br/>
+<br/>
+.products-table-wrap {<br/>
+  overflow-x: auto;<br/>
+  border: 1px solid #e2e8f0;<br/>
+  border-radius: 14px;<br/>
+}<br/>
+<br/>
+.products-table {<br/>
+  width: 100%;<br/>
+  min-width: 860px;<br/>
+  border-collapse: collapse;<br/>
+}<br/>
+<br/>
+.products-table thead th {<br/>
+  padding: 14px 12px;<br/>
+  text-align: left;<br/>
+  background: #f4f8fc;<br/>
+  color: #25446c;<br/>
+  font-size: 0.9rem;<br/>
+}<br/>
+<br/>
+.products-table tbody td {<br/>
+  padding: 14px 12px;<br/>
+  border-top: 1px solid #edf2f7;<br/>
+  vertical-align: middle;<br/>
+}<br/>
+<br/>
+.products-table tbody tr:hover {<br/>
+  background: #fafcff;<br/>
+}<br/>
+<br/>
+.products-table__item {<br/>
+  display: flex;<br/>
+  align-items: center;<br/>
+  gap: 14px;<br/>
+  min-width: 0;<br/>
+}<br/>
+<br/>
+.products-table__thumb,<br/>
+.products-card__thumb {<br/>
+  width: 72px;<br/>
+  height: 72px;<br/>
+  flex-shrink: 0;<br/>
+  border-radius: 12px;<br/>
+  overflow: hidden;<br/>
+  background: #f4f8fc;<br/>
+  border: 1px solid #dbe3ef;<br/>
+}<br/>
+<br/>
+.products-table__thumb img,<br/>
+.products-card__thumb img,<br/>
+.products-modal__preview img {<br/>
+  width: 100%;<br/>
+  height: 100%;<br/>
+  object-fit: cover;<br/>
+}<br/>
+<br/>
+.products-table__main {<br/>
+  display: grid;<br/>
+  gap: 4px;<br/>
+  min-width: 0;<br/>
+}<br/>
+<br/>
+.products-table__main strong {<br/>
+  font-size: 0.98rem;<br/>
+  color: #0f172a;<br/>
+}<br/>
+<br/>
+.products-table__main span {<br/>
+  color: #5f6f87;<br/>
+  font-size: 0.88rem;<br/>
+  line-height: 1.45;<br/>
+  display: -webkit-box;<br/>
+  -webkit-line-clamp: 2;<br/>
+  -webkit-box-orient: vertical;<br/>
+  overflow: hidden;<br/>
+}<br/>
+<br/>
+.products-table__id,<br/>
+.products-card__heading p {<br/>
+  margin: 0;<br/>
+  color: #59708f;<br/>
+  font-size: 0.76rem;<br/>
+  font-weight: 700;<br/>
+  letter-spacing: 0.04em;<br/>
+  text-transform: uppercase;<br/>
+}<br/>
+<br/>
+.products-table__actions,<br/>
+.products-card__actions,<br/>
+.products-modal__actions {<br/>
+  display: flex;<br/>
+  flex-wrap: wrap;<br/>
+  gap: 8px;<br/>
+}<br/>
+<br/>
+.products-btn {<br/>
+  border: none;<br/>
+  border-radius: 10px;<br/>
+  padding: 10px 14px;<br/>
+  font: inherit;<br/>
+  font-weight: 700;<br/>
+  cursor: pointer;<br/>
+}<br/>
+<br/>
+.products-btn--primary {<br/>
+  background: #0a63d8;<br/>
+  color: #fff;<br/>
+}<br/>
+<br/>
+.products-btn--primary:hover {<br/>
+  background: #0a53b2;<br/>
+}<br/>
+<br/>
+.products-btn--ghost,<br/>
+.products-btn--secondary {<br/>
+  background: #f3f7ff;<br/>
+  color: #16447f;<br/>
+  border: 1px solid #cad6e8;<br/>
+}<br/>
+<br/>
+.products-btn--ghost:hover,<br/>
+.products-btn--secondary:hover {<br/>
+  background: #e6eefc;<br/>
+}<br/>
+<br/>
+.products-btn--danger {<br/>
+  background: #fff1f2;<br/>
+  color: #b91c1c;<br/>
+  border: 1px solid #fecdd3;<br/>
+}<br/>
+<br/>
+.products-btn--danger:hover {<br/>
+  background: #ffe4e6;<br/>
+}<br/>
+<br/>
+.products-status {<br/>
+  display: inline-flex;<br/>
+  align-items: center;<br/>
+  justify-content: center;<br/>
+  padding: 7px 11px;<br/>
+  border-radius: 999px;<br/>
+  font-size: 0.78rem;<br/>
+  font-weight: 800;<br/>
+}<br/>
+<br/>
+.products-status.is-ready {<br/>
+  background: #ecfdf3;<br/>
+  color: #166534;<br/>
+}<br/>
+<br/>
+.products-status.is-empty {<br/>
+  background: #fff1f2;<br/>
+  color: #b91c1c;<br/>
+}<br/>
+<br/>
+.products-cards {<br/>
+  display: none;<br/>
+  gap: 14px;<br/>
+}<br/>
+<br/>
+.products-card {<br/>
+  border: 1px solid #dbe3ef;<br/>
+  border-radius: 14px;<br/>
+  background: #fff;<br/>
+  padding: 16px;<br/>
+  display: grid;<br/>
+  gap: 14px;<br/>
+}<br/>
+<br/>
+.products-card__header {<br/>
+  display: flex;<br/>
+  gap: 14px;<br/>
+  align-items: flex-start;<br/>
+}<br/>
+<br/>
+.products-card__heading {<br/>
+  display: grid;<br/>
+  gap: 6px;<br/>
+}<br/>
+<br/>
+.products-card__heading h3 {<br/>
+  margin: 0;<br/>
+  font-size: 1rem;<br/>
+}<br/>
+<br/>
+.products-card__price {<br/>
+  margin: 0;<br/>
+  font-size: 1.2rem;<br/>
+  font-weight: 800;<br/>
+  color: #0a63d8;<br/>
+}<br/>
+<br/>
+.products-card__description {<br/>
+  margin: 0;<br/>
+  color: #4f5f7e;<br/>
+  line-height: 1.5;<br/>
+}<br/>
+<br/>
+.products-card__meta {<br/>
+  display: flex;<br/>
+  flex-wrap: wrap;<br/>
+  gap: 10px;<br/>
+  color: #4f5f7e;<br/>
+  font-size: 0.9rem;<br/>
+}<br/>
+<br/>
+.products-card__meta span {<br/>
+  background: #f8fbff;<br/>
+  border: 1px solid #dbe3ef;<br/>
+  border-radius: 999px;<br/>
+  padding: 6px 10px;<br/>
+}<br/>
+<br/>
+.products-modal-backdrop {<br/>
+  position: fixed;<br/>
+  inset: 0;<br/>
+  z-index: 1200;<br/>
+  display: flex;<br/>
+  align-items: center;<br/>
+  justify-content: center;<br/>
+  padding: 16px;<br/>
+  background: rgba(15, 23, 42, 0.56);<br/>
+}<br/>
+<br/>
+.products-modal {<br/>
+  width: min(760px, 100%);<br/>
+  max-height: calc(100vh - 32px);<br/>
+  overflow-y: auto;<br/>
+  background: #fff;<br/>
+  border: 1px solid #dbe3ef;<br/>
+  border-radius: 16px;<br/>
+  padding: 20px;<br/>
+  box-shadow: 0 20px 42px rgba(15, 23, 42, 0.18);<br/>
+  font-family: "Manrope", "Segoe UI", sans-serif;<br/>
+}<br/>
+<br/>
+.products-modal__header {<br/>
+  display: flex;<br/>
+  justify-content: space-between;<br/>
+  align-items: flex-start;<br/>
+  gap: 14px;<br/>
+  margin-bottom: 18px;<br/>
+}<br/>
+<br/>
+.products-modal__form {<br/>
+  display: grid;<br/>
+  gap: 18px;<br/>
+}<br/>
+<br/>
+.products-modal__grid {<br/>
+  display: grid;<br/>
+  grid-template-columns: repeat(2, minmax(0, 1fr));<br/>
+  gap: 14px;<br/>
+}<br/>
+<br/>
+.products-modal__field {<br/>
+  display: grid;<br/>
+  gap: 8px;<br/>
+}<br/>
+<br/>
+.products-modal__field--full {<br/>
+  grid-column: 1 / -1;<br/>
+}<br/>
+<br/>
+.products-modal__field label {<br/>
+  font-size: 0.92rem;<br/>
+  font-weight: 700;<br/>
+  color: #25446c;<br/>
+}<br/>
+<br/>
+.products-modal__field textarea {<br/>
+  min-height: 110px;<br/>
+  resize: vertical;<br/>
+}<br/>
+<br/>
+.products-modal__help {<br/>
+  margin: 0;<br/>
+  color: #5f6f87;<br/>
+  font-size: 0.86rem;<br/>
+  line-height: 1.5;<br/>
+}<br/>
+<br/>
+.products-modal__preview {<br/>
+  width: min(220px, 100%);<br/>
+  aspect-ratio: 1;<br/>
+  overflow: hidden;<br/>
+  border-radius: 14px;<br/>
+  border: 1px solid #dbe3ef;<br/>
+  background: #f4f8fc;<br/>
+}<br/>
+<br/>
+@media (max-width: 900px) {<br/>
+  .products-toolbar {<br/>
+    grid-template-columns: 1fr;<br/>
+  }<br/>
+}<br/>
+<br/>
+@media (max-width: 760px) {<br/>
+  .products-shell {<br/>
+    padding: 14px 10px 24px;<br/>
+  }<br/>
+<br/>
+  .products-header-card,<br/>
+  .products-modal__header,<br/>
+  .products-modal__actions {<br/>
+    flex-direction: column;<br/>
+    align-items: stretch;<br/>
+  }<br/>
+<br/>
+  .products-header-actions,<br/>
+  .products-card__actions,<br/>
+  .products-modal__actions {<br/>
+    display: grid;<br/>
+    grid-template-columns: 1fr;<br/>
+  }<br/>
+<br/>
+  .products-table-wrap {<br/>
+    display: none;<br/>
+  }<br/>
+<br/>
+  .products-cards {<br/>
+    display: grid;<br/>
+  }<br/>
+<br/>
+  .products-modal__grid {<br/>
+    grid-template-columns: 1fr;<br/>
+  }<br/>
+}<br/>
+&lt;/style&gt;<br/>
+  &lt;style type="text/css" data-vite-dev-id="/app/app/styles/Lista_productos.css"&gt;:root{<br/>
+--blue:#0b63b8;<br/>
+--orange:#f6a11b;<br/>
+--card-red:#e66464;<br/>
+--muted:#f3f3f3;<br/>
+--row-gray:#efefef;<br/>
+<br/>
+}<br/>
+<br/>
+*{<br/>
+box-sizing:border-box;<br/>
+font-family: 'Segoe UI', Roboto, Arial, sans-serif<br/>
+}<br/>
+<br/>
+body{<br/>
+    margin:0;<br/>
+    background:#fff<br/>
+}<br/>
+<br/>
+.top-bar{<br/>
+    background:var(--blue);<br/>
+    height:64px;<br/>
+    color:#fff;<br/>
+    display:flex;<br/>
+    align-items:center;<br/>
+    justify-content:space-between;<br/>
+    padding:0 18px;<br/>
+    border-bottom:6px solid var(--orange)<br/>
+}<br/>
+<br/>
+.logo-wrap{<br/>
+    display:flex;<br/>
+    align-items:center;<br/>
+    gap:10px<br/>
+}<br/>
+<br/>
+.logo-circle{<br/>
+    width:46px;<br/>
+    height:46px;<br/>
+    border-radius:8px;<br/>
+    background:#fff;<br/>
+    color:var(--blue);<br/>
+    display:flex;<br/>
+    align-items:center;<br/>
+    justify-content:center;<br/>
+    font-weight:700<br/>
+}<br/>
+<br/>
+.brand{<br/>
+    font-weight:700<br/>
+}<br/>
+<br/>
+.top-right .btn{<br/>
+    margin-left:12px<br/>
+}<br/>
+<br/>
+.page-title{<br/>
+    text-align:center;<br/>
+    margin:22px 0 12px;<br/>
+    font-size:30px<br/>
+}<br/>
+<br/>
+.card-area{<br/>
+    display:flex;<br/>
+    flex-direction:column;<br/>
+    align-items:center;<br/>
+    padding:10px<br/>
+}<br/>
+<br/>
+.card{<br/>
+    width:90%;<br/>
+    background:var(--card-red);<br/>
+    border-radius:6px;<br/>
+    padding:20px 18px 36px;<br/>
+    box-shadow:0 2px 6px rgba(0,0,0,0.08)<br/>
+}<br/>
+<br/>
+.list-card {<br/>
+    background: #fff; <br/>
+    padding: 10px;<br/>
+} <br/>
+<br/>
+.btn{<br/>
+    padding:8px 14px;<br/>
+    border-radius:18px;<br/>
+    border:none;<br/>
+    cursor:pointer;<br/>
+    font-weight:600<br/>
+}<br/>
+<br/>
+.btn.yellow.outline{<br/>
+    background:var(--orange);<br/>
+    border:2px solid rgba(255,255,255,0.2);<br/>
+    color:#fff<br/>
+}<br/>
+<br/>
+.btn.green{<br/>
+    background:var(--orange);<br/>
+    color:#fff;<br/>
+    padding:10px 26px<br/>
+}<br/>
+<br/>
+.btn.red{<br/>
+    background:var(--card-red);<br/>
+    color:#fff<br/>
+}<br/>
+<br/>
+.btn.small {<br/>
+    padding: 4px 8px; <br/>
+    margin: 0 4px; <br/>
+    border-radius: 4px; <br/>
+    font-size: 12px;<br/>
+}<br/>
+<br/>
+.table-container{<br/>
+    background:#fff;<br/>
+    padding:10px;<br/>
+    border-radius:4px;<br/>
+    overflow-x:auto<br/>
+}<br/>
+<br/>
+.product-table{<br/>
+    width:100%;<br/>
+    border-collapse:collapse;<br/>
+    min-width:980px<br/>
+}<br/>
+<br/>
+.product-table thead th{<br/>
+    font-weight:600;<br/>
+    padding:12px 10px;<br/>
+    background:#fff;<br/>
+    border-bottom:2px solid #ddd;<br/>
+    text-align:left<br/>
+}<br/>
+<br/>
+.product-table tbody td{<br/>
+    padding:12px 10px;<br/>
+    border-bottom:1px solid #e3e3e3;<br/>
+    vertical-align:middle<br/>
+}<br/>
+<br/>
+.product-table tbody .desc{<br/>
+    max-width:250px;<br/>
+    color:#666<br/>
+}<br/>
+<br/>
+.product-table tbody .img-cell img{<br/>
+    width:48px;<br/>
+    height:48px;<br/>
+    object-fit:cover;<br/>
+    border-radius:4px<br/>
+}<br/>
+<br/>
+.row-odd{<br/>
+    background:var(--row-gray)<br/>
+}<br/>
+<br/>
+.modal-backdrop {<br/>
+    position: fixed;<br/>
+    top: 0;<br/>
+    left: 0;<br/>
+    width: 100%;<br/>
+    height: 100%;<br/>
+    background-color: rgba(0, 0, 0, 0.7); <br/>
+    display: flex;<br/>
+    justify-content: center;<br/>
+    align-items: center;<br/>
+    z-index: 1000; /* Asegura que esté por encima de todo */<br/>
+}<br/>
+<br/>
+.modal-content {<br/>
+    background-color: white;<br/>
+    padding: 30px;<br/>
+    border-radius: 10px;<br/>
+    width: 90%;<br/>
+    max-width: 500px;<br/>
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);<br/>
+    color: #333;<br/>
+}<br/>
+<br/>
+.modal-content h2 {<br/>
+    margin-top: 0;<br/>
+    margin-bottom: 20px;<br/>
+    border-bottom: 2px solid #ccc;<br/>
+    padding-bottom: 10px;<br/>
+}<br/>
+<br/>
+.modal-content label {<br/>
+    display: block;<br/>
+    margin-top: 10px;<br/>
+    font-weight: bold;<br/>
+}<br/>
+<br/>
+.modal-content input[type="text"],<br/>
+.modal-content input[type="number"],<br/>
+.modal-content input[type="file"],<br/>
+.modal-content textarea,<br/>
+.modal-content select {<br/>
+    width: 100%;<br/>
+    padding: 8px;<br/>
+    margin-top: 5px;<br/>
+    box-sizing: border-box;<br/>
+    border: 1px solid #ccc;<br/>
+    border-radius: 4px;<br/>
+}<br/>
+<br/>
+.modal-content textarea {<br/>
+    resize: vertical;<br/>
+    min-height: 88px;<br/>
+}<br/>
+<br/>
+.field-help {<br/>
+    margin: 8px 0 0;<br/>
+    color: #5f6b7a;<br/>
+    font-size: 13px;<br/>
+    line-height: 1.4;<br/>
+}<br/>
+<br/>
+.image-preview {<br/>
+    margin-top: 14px;<br/>
+    padding: 12px;<br/>
+    border: 1px dashed #c7d1db;<br/>
+    border-radius: 10px;<br/>
+    background: #f8fafc;<br/>
+    display: flex;<br/>
+    justify-content: center;<br/>
+}<br/>
+<br/>
+.image-preview img {<br/>
+    max-width: 100%;<br/>
+    max-height: 220px;<br/>
+    object-fit: contain;<br/>
+    border-radius: 8px;<br/>
+}<br/>
+<br/>
+.modal-actions {<br/>
+    margin-top: 20px;<br/>
+    display: flex;<br/>
+    justify-content: flex-end;<br/>
+    gap: 10px;<br/>
+}<br/>
+<br/>
+.site-footer {<br/>
+    background:rgb(66, 66, 66);               /* Fondo oscuro elegante */<br/>
+    color: #fffcfc;                    /* Texto blanco */<br/>
+    padding: 20px 0;<br/>
+    margin-top: 40px;<br/>
+    font-family: "Inter", sans-serif;<br/>
+}<br/>
+<br/>
+.footer-inner {<br/>
+    max-width: 1200px;<br/>
+    margin: 0 auto;<br/>
+    padding: 0 20px;<br/>
+<br/>
+    display: flex;<br/>
+    flex-direction: column;<br/>
+    justify-content: space-between;<br/>
+    align-items: center;<br/>
+    flex-wrap: wrap;                /* Responsive */<br/>
+    gap: 10px;<br/>
+}<br/>
+<br/>
+.site-footer div {<br/>
+    font-size: 0.95rem;<br/>
+}<br/>
+<br/>
+.socials {<br/>
+    font-weight: 500;<br/>
+    opacity: 0.9;<br/>
+}<br/>
+<br/>
+.socials span {<br/>
+    margin: 0 6px;<br/>
+}<br/>
+<br/>
+/* Hover bonito para los nombres de redes (si los haces botones o links) */<br/>
+.socials a {<br/>
+    color: #fff;<br/>
+    text-decoration: none;<br/>
+    margin: 0 8px;<br/>
+    transition: 0.3s;<br/>
+}<br/>
+<br/>
+.socials a:hover {<br/>
+    color: #00e676;                 /* Verde tipo WhatsApp */<br/>
+}<br/>
+&lt;/style&gt;<br/>
+ &lt;/head&gt;<br/>
+ &lt;body&gt;<br/>
+  &lt;div id="root"&gt;<br/>
+   &lt;header&gt;<br/>
+    &lt;nav class="barra-navegacion"&gt;<br/>
+     &lt;div class="texto-logo" style="cursor: pointer;"&gt;<br/>
+      Mercapleno<br/>
+     &lt;/div&gt;<br/>
+     &lt;div class="contenedor-usuario"&gt;<br/>
+      &lt;span style="margin-right: 20px; font-weight: bold;"&gt;Usuario: pablo rivero&lt;/span&gt;&lt;button class="boton-nav" style="background-color: rgb(217, 83, 79); color: white;"&gt;Cerrar Sesión&lt;/button&gt;<br/>
+     &lt;/div&gt;<br/>
+     &lt;div class="contenedor-botones"&gt;<br/>
+      &lt;button class="boton-nav" style="background-color: rgb(7, 59, 116); color: white;"&gt;Catálogo&lt;/button&gt;&lt;button class="boton-nav" style="background-color: rgb(249, 179, 0); color: black;"&gt;Carrito (1)&lt;/button&gt;<br/>
+     &lt;/div&gt;<br/>
+    &lt;/nav&gt;<br/>
+   &lt;/header&gt;<br/>
+   &lt;div class="inventory-page-container"&gt;<br/>
+    &lt;header class="catalog-header"&gt;<br/>
+     &lt;div class="catalog-title"&gt;<br/>
+      &lt;span class="catalog-eyebrow"&gt;Catalogo&lt;/span&gt;<br/>
+      &lt;h2&gt;Explora el inventario disponible&lt;/h2&gt;<br/>
+      &lt;p&gt;Filtra por categoria, busca por nombre y arma tu pedido desde una vista mas limpia y ordenada.&lt;/p&gt;<br/>
+     &lt;/div&gt;<br/>
+     &lt;div class="catalog-chip-row"&gt;<br/>
+      &lt;button type="button" class="catalog-chip catalog-chip--active"&gt;Todo&lt;/button&gt;&lt;button type="button" class="catalog-chip "&gt;Abarrotes&lt;/button&gt;&lt;button type="button" class="catalog-chip "&gt;Aseo&lt;/button&gt;&lt;button type="button" class="catalog-chip "&gt;Bebidas&lt;/button&gt;&lt;button type="button" class="catalog-chip "&gt;Cárnicos&lt;/button&gt;<br/>
+     &lt;/div&gt;<br/>
+    &lt;/header&gt;<br/>
+    &lt;section class="filtros"&gt;<br/>
+     &lt;div class="filter-field filter-field--search"&gt;<br/>
+      &lt;label for="nombre"&gt;Busqueda&lt;/label&gt;&lt;input id="nombre" placeholder="Nombre del producto" type="text" value=""&gt;<br/>
+     &lt;/div&gt;<br/>
+     &lt;div class="filter-field"&gt;<br/>
+      &lt;label for="categoria"&gt;Categoria&lt;/label&gt;&lt;select id="categoria"&gt;&lt;option value="todas"&gt;Todas las categorias&lt;/option&gt;&lt;option value="abarrotes"&gt;Abarrotes&lt;/option&gt;&lt;option value="aseo"&gt;Aseo&lt;/option&gt;&lt;option value="bebidas"&gt;Bebidas&lt;/option&gt;&lt;option value="cárnicos"&gt;Cárnicos&lt;/option&gt;&lt;option value="congelados"&gt;Congelados&lt;/option&gt;&lt;option value="frutas y verduras"&gt;Frutas y Verduras&lt;/option&gt;&lt;option value="higiene personal"&gt;Higiene Personal&lt;/option&gt;&lt;option value="lácteos"&gt;Lácteos&lt;/option&gt;&lt;option value="panadería"&gt;Panadería&lt;/option&gt;&lt;option value="snacks"&gt;Snacks&lt;/option&gt;&lt;/select&gt;<br/>
+     &lt;/div&gt;<br/>
+     &lt;div class="filter-field"&gt;<br/>
+      &lt;label for="precioMin"&gt;Precio minimo&lt;/label&gt;&lt;input id="precioMin" placeholder="Ej: 5000" type="number" value=""&gt;<br/>
+     &lt;/div&gt;<br/>
+     &lt;div class="filter-field"&gt;<br/>
+      &lt;label for="precioMax"&gt;Precio maximo&lt;/label&gt;&lt;input id="precioMax" placeholder="Ej: 30000" type="number" value=""&gt;<br/>
+     &lt;/div&gt;<br/>
+     &lt;div class="filter-actions"&gt;<br/>
+      &lt;button id="limpiar" type="button" class="boton-nav"&gt;Limpiar filtros&lt;/button&gt;<br/>
+     &lt;/div&gt;<br/>
+    &lt;/section&gt;<br/>
+    &lt;section class="catalogo"&gt;<br/>
+     &lt;article class="producto product-card" data-name="Carne de Res 500g" data-category="cárnicos" data-price="14500" data-id="3"&gt;<br/>
+      &lt;div class="product-card__header"&gt;<br/>
+       &lt;span class="product-card__category"&gt;cárnicos&lt;/span&gt;&lt;span class="product-card__stock-badge "&gt;Disponible&lt;/span&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="imagen product-card__image"&gt;<br/>
+       &lt;img alt="Carne de Res 500g" src="https://res.cloudinary.com/dnvonflxi/image/upload/v1741755504/products/hbcxagibhpdvkaeukp8m.png"&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="product-card__body"&gt;<br/>
+       &lt;h3 class="nombre product-card__title"&gt;Carne de Res 500g&lt;/h3&gt;<br/>
+       &lt;p class="product-card__description"&gt;Carne de res 100% fresca, seleccionada de ganado criado bajo estrictos estándares de calidad. Su textura tierna y jugosa la hace ideal para asados, guisos, parrillas y preparaciones típicas colombianas.&lt;/p&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="product-card__footer"&gt;<br/>
+       &lt;div class="product-card__price-block"&gt;<br/>
+        &lt;span class="product-card__price-label"&gt;Precio unitario&lt;/span&gt;<br/>
+        &lt;p class="precio product-card__price"&gt;$&nbsp;14.500&lt;/p&gt;<br/>
+       &lt;/div&gt;<br/>
+       &lt;div class="botones product-card__actions"&gt;<br/>
+        &lt;button class="botoncito_producto"&gt;Agregar al carrito&lt;/button&gt;<br/>
+       &lt;/div&gt;<br/>
+      &lt;/div&gt;<br/>
+     &lt;/article&gt;<br/>
+     &lt;article class="producto product-card" data-name="Coca-Cola 1.5L" data-category="bebidas" data-price="4800" data-id="4"&gt;<br/>
+      &lt;div class="product-card__header"&gt;<br/>
+       &lt;span class="product-card__category"&gt;bebidas&lt;/span&gt;&lt;span class="product-card__stock-badge "&gt;Disponible&lt;/span&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="imagen product-card__image"&gt;<br/>
+       &lt;img alt="Coca-Cola 1.5L" src="https://product-images.farmatodo.com/8lPAboC9AiIl3ApU3iby9wX-oQ_mQy18Ac3AfVJTYU2DVvgdK1orI42eXPjwVVNlqgTt5n_m7XC2ZH_DvhRaS3gw4NmX3QIBsaJMry1Zunl4JRcJWg=s300-rw"&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="product-card__body"&gt;<br/>
+       &lt;h3 class="nombre product-card__title"&gt;Coca-Cola 1.5L&lt;/h3&gt;<br/>
+       &lt;p class="product-card__description"&gt;Refrescante y deliciosa, ideal para acompañar tus comidas favoritas.&lt;/p&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="product-card__footer"&gt;<br/>
+       &lt;div class="product-card__price-block"&gt;<br/>
+        &lt;span class="product-card__price-label"&gt;Precio unitario&lt;/span&gt;<br/>
+        &lt;p class="precio product-card__price"&gt;$&nbsp;4.800&lt;/p&gt;<br/>
+       &lt;/div&gt;<br/>
+       &lt;div class="botones product-card__actions"&gt;<br/>
+        &lt;button class="botoncito_producto"&gt;Agregar al carrito&lt;/button&gt;<br/>
+       &lt;/div&gt;<br/>
+      &lt;/div&gt;<br/>
+     &lt;/article&gt;<br/>
+     &lt;article class="producto product-card" data-name="Detergente Ariel 1Kg" data-category="aseo" data-price="12800" data-id="7"&gt;<br/>
+      &lt;div class="product-card__header"&gt;<br/>
+       &lt;span class="product-card__category"&gt;aseo&lt;/span&gt;&lt;span class="product-card__stock-badge "&gt;Disponible&lt;/span&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="imagen product-card__image"&gt;<br/>
+       &lt;img alt="Detergente Ariel 1Kg" src="/images/productos/ariel.jpg"&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="product-card__body"&gt;<br/>
+       &lt;h3 class="nombre product-card__title"&gt;Detergente Ariel 1Kg&lt;/h3&gt;<br/>
+       &lt;p class="product-card__description"&gt;Limpieza profunda y cuidado de la ropa Remueve manchas difíciles desde el primer lavado.&lt;/p&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="product-card__footer"&gt;<br/>
+       &lt;div class="product-card__price-block"&gt;<br/>
+        &lt;span class="product-card__price-label"&gt;Precio unitario&lt;/span&gt;<br/>
+        &lt;p class="precio product-card__price"&gt;$&nbsp;12.800&lt;/p&gt;<br/>
+       &lt;/div&gt;<br/>
+       &lt;div class="botones product-card__actions"&gt;<br/>
+        &lt;button class="botoncito_producto"&gt;Agregar al carrito&lt;/button&gt;<br/>
+       &lt;/div&gt;<br/>
+      &lt;/div&gt;<br/>
+     &lt;/article&gt;<br/>
+     &lt;article class="producto product-card" data-name="Helado Crem Helado 1L" data-category="congelados" data-price="10500" data-id="10"&gt;<br/>
+      &lt;div class="product-card__header"&gt;<br/>
+       &lt;span class="product-card__category"&gt;congelados&lt;/span&gt;&lt;span class="product-card__stock-badge "&gt;Disponible&lt;/span&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="imagen product-card__image"&gt;<br/>
+       &lt;img alt="Helado Crem Helado 1L" src="https://cdn1.totalcommerce.cloud/cremhelado/product-zoom/es/vaso-1-litro-vainilla-1.webp"&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="product-card__body"&gt;<br/>
+       &lt;h3 class="nombre product-card__title"&gt;Helado Crem Helado 1L&lt;/h3&gt;<br/>
+       &lt;p class="product-card__description"&gt;Postre cremoso y refrescante Elaborado con ingredientes de alta calidad y sabores irresistibles como vainilla, chocolate, fresa y arequipe.&lt;/p&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="product-card__footer"&gt;<br/>
+       &lt;div class="product-card__price-block"&gt;<br/>
+        &lt;span class="product-card__price-label"&gt;Precio unitario&lt;/span&gt;<br/>
+        &lt;p class="precio product-card__price"&gt;$&nbsp;10.500&lt;/p&gt;<br/>
+       &lt;/div&gt;<br/>
+       &lt;div class="botones product-card__actions"&gt;<br/>
+        &lt;button class="botoncito_producto"&gt;Agregar al carrito&lt;/button&gt;<br/>
+       &lt;/div&gt;<br/>
+      &lt;/div&gt;<br/>
+     &lt;/article&gt;<br/>
+     &lt;article class="producto product-card" data-name="Leche Alquería 1L" data-category="lácteos" data-price="4200" data-id="2"&gt;<br/>
+      &lt;div class="product-card__header"&gt;<br/>
+       &lt;span class="product-card__category"&gt;lácteos&lt;/span&gt;&lt;span class="product-card__stock-badge "&gt;Disponible&lt;/span&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="imagen product-card__image"&gt;<br/>
+       &lt;img alt="Leche Alquería 1L" src="/images/placeholder.svg"&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="product-card__body"&gt;<br/>
+       &lt;h3 class="nombre product-card__title"&gt;Leche Alquería 1L&lt;/h3&gt;<br/>
+       &lt;p class="product-card__description"&gt;eche de alta calidad, frescura y con respaldo de un sello de calidad que no necesita hervirse y se puede consumir directamente del empaque&lt;/p&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="product-card__footer"&gt;<br/>
+       &lt;div class="product-card__price-block"&gt;<br/>
+        &lt;span class="product-card__price-label"&gt;Precio unitario&lt;/span&gt;<br/>
+        &lt;p class="precio product-card__price"&gt;$&nbsp;4.200&lt;/p&gt;<br/>
+       &lt;/div&gt;<br/>
+       &lt;div class="botones product-card__actions"&gt;<br/>
+        &lt;button class="botoncito_producto"&gt;Agregar al carrito&lt;/button&gt;<br/>
+       &lt;/div&gt;<br/>
+      &lt;/div&gt;<br/>
+     &lt;/article&gt;<br/>
+     &lt;article class="producto product-card" data-name="Manzana Roja Kg" data-category="frutas y verduras" data-price="5200" data-id="6"&gt;<br/>
+      &lt;div class="product-card__header"&gt;<br/>
+       &lt;span class="product-card__category"&gt;frutas y verduras&lt;/span&gt;&lt;span class="product-card__stock-badge "&gt;Disponible&lt;/span&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="imagen product-card__image"&gt;<br/>
+       &lt;img alt="Manzana Roja Kg" src="/images/placeholder.svg"&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="product-card__body"&gt;<br/>
+       &lt;h3 class="nombre product-card__title"&gt;Manzana Roja Kg&lt;/h3&gt;<br/>
+       &lt;p class="product-card__description"&gt;Fruta natural fresca, dulce y crujiente ideal para consumir sola, jugos, ensaladas o postres.&lt;/p&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="product-card__footer"&gt;<br/>
+       &lt;div class="product-card__price-block"&gt;<br/>
+        &lt;span class="product-card__price-label"&gt;Precio unitario&lt;/span&gt;<br/>
+        &lt;p class="precio product-card__price"&gt;$&nbsp;5.200&lt;/p&gt;<br/>
+       &lt;/div&gt;<br/>
+       &lt;div class="botones product-card__actions"&gt;<br/>
+        &lt;button class="botoncito_producto"&gt;Agregar al carrito&lt;/button&gt;<br/>
+       &lt;/div&gt;<br/>
+      &lt;/div&gt;<br/>
+     &lt;/article&gt;<br/>
+     &lt;article class="producto product-card" data-name="Pan Bimbo " data-category="panadería" data-price="4600" data-id="5"&gt;<br/>
+      &lt;div class="product-card__header"&gt;<br/>
+       &lt;span class="product-card__category"&gt;panadería&lt;/span&gt;&lt;span class="product-card__stock-badge "&gt;Disponible&lt;/span&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="imagen product-card__image"&gt;<br/>
+       &lt;img alt="Pan Bimbo " src="/images/placeholder.svg"&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="product-card__body"&gt;<br/>
+       &lt;h3 class="nombre product-card__title"&gt;Pan Bimbo&lt;/h3&gt;<br/>
+       &lt;p class="product-card__description"&gt;Pan tajado blanco suave y fresco Ideal para desayunos, merienda y sándwiches.&lt;/p&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="product-card__footer"&gt;<br/>
+       &lt;div class="product-card__price-block"&gt;<br/>
+        &lt;span class="product-card__price-label"&gt;Precio unitario&lt;/span&gt;<br/>
+        &lt;p class="precio product-card__price"&gt;$&nbsp;4.600&lt;/p&gt;<br/>
+       &lt;/div&gt;<br/>
+       &lt;div class="botones product-card__actions"&gt;<br/>
+        &lt;button class="botoncito_producto"&gt;Agregar al carrito&lt;/button&gt;<br/>
+       &lt;/div&gt;<br/>
+      &lt;/div&gt;<br/>
+     &lt;/article&gt;<br/>
+     &lt;article class="producto product-card" data-name="Papas Margarita 160g" data-category="snacks" data-price="3200" data-id="9"&gt;<br/>
+      &lt;div class="product-card__header"&gt;<br/>
+       &lt;span class="product-card__category"&gt;snacks&lt;/span&gt;&lt;span class="product-card__stock-badge "&gt;Disponible&lt;/span&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="imagen product-card__image"&gt;<br/>
+       &lt;img alt="Papas Margarita 160g" src="https://mecato.shop/cdn/shop/products/papas-margarita-1.jpg?v=1643909363"&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="product-card__body"&gt;<br/>
+       &lt;h3 class="nombre product-card__title"&gt;Papas Margarita 160g&lt;/h3&gt;<br/>
+       &lt;p class="product-card__description"&gt;Papas crocantes con sabor auténtico Elaboradas con papas 100% naturales, fritas y sazonadas para ofrecer un sabor clásico y delicioso.&lt;/p&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="product-card__footer"&gt;<br/>
+       &lt;div class="product-card__price-block"&gt;<br/>
+        &lt;span class="product-card__price-label"&gt;Precio unitario&lt;/span&gt;<br/>
+        &lt;p class="precio product-card__price"&gt;$&nbsp;3.200&lt;/p&gt;<br/>
+       &lt;/div&gt;<br/>
+       &lt;div class="botones product-card__actions"&gt;<br/>
+        &lt;button class="botoncito_producto"&gt;Agregar al carrito&lt;/button&gt;<br/>
+       &lt;/div&gt;<br/>
+      &lt;/div&gt;<br/>
+     &lt;/article&gt;<br/>
+     &lt;article class="producto product-card" data-name="Shampoo Savital 350ml" data-category="higiene personal" data-price="8700" data-id="8"&gt;<br/>
+      &lt;div class="product-card__header"&gt;<br/>
+       &lt;span class="product-card__category"&gt;higiene personal&lt;/span&gt;&lt;span class="product-card__stock-badge "&gt;Disponible&lt;/span&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="imagen product-card__image"&gt;<br/>
+       &lt;img alt="Shampoo Savital 350ml" src="https://http2.mlstatic.com/D_NQ_NP_884079-MLU76991314497_062024-O.webp"&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="product-card__body"&gt;<br/>
+       &lt;h3 class="nombre product-card__title"&gt;Shampoo Savital 350ml&lt;/h3&gt;<br/>
+       &lt;p class="product-card__description"&gt;Cuidado natural para tu cabello Enriquecido con sábila y extractos naturales que nutren, fortalecen y dejan el cabello suave y brillante.&lt;/p&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="product-card__footer"&gt;<br/>
+       &lt;div class="product-card__price-block"&gt;<br/>
+        &lt;span class="product-card__price-label"&gt;Precio unitario&lt;/span&gt;<br/>
+        &lt;p class="precio product-card__price"&gt;$&nbsp;8.700&lt;/p&gt;<br/>
+       &lt;/div&gt;<br/>
+       &lt;div class="botones product-card__actions"&gt;<br/>
+        &lt;button class="botoncito_producto"&gt;Agregar al carrito&lt;/button&gt;<br/>
+       &lt;/div&gt;<br/>
+      &lt;/div&gt;<br/>
+     &lt;/article&gt;<br/>
+     &lt;article class="producto product-card" data-name="wous" data-category="abarrotes" data-price="300" data-id="1"&gt;<br/>
+      &lt;div class="product-card__header"&gt;<br/>
+       &lt;span class="product-card__category"&gt;abarrotes&lt;/span&gt;&lt;span class="product-card__stock-badge "&gt;Disponible&lt;/span&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="imagen product-card__image"&gt;<br/>
+       &lt;img alt="wous" src="https://exitocol.vtexassets.com/arquivos/ids/28955925/Arroz-Diana-1000-gr-552155_a.jpg?v=638864002504830000"&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="product-card__body"&gt;<br/>
+       &lt;h3 class="nombre product-card__title"&gt;wous&lt;/h3&gt;<br/>
+       &lt;p class="product-card__description"&gt;marca de arroz de alta calidad, seleccionada y cultivada para ofrecer granos blancos, sueltos y deliciosos&lt;/p&gt;<br/>
+      &lt;/div&gt;<br/>
+      &lt;div class="product-card__footer"&gt;<br/>
+       &lt;div class="product-card__price-block"&gt;<br/>
+        &lt;span class="product-card__price-label"&gt;Precio unitario&lt;/span&gt;<br/>
+        &lt;p class="precio product-card__price"&gt;$&nbsp;300&lt;/p&gt;<br/>
+       &lt;/div&gt;<br/>
+       &lt;div class="botones product-card__actions"&gt;<br/>
+        &lt;button class="botoncito_producto"&gt;Agregar al carrito&lt;/button&gt;<br/>
+       &lt;/div&gt;<br/>
+      &lt;/div&gt;<br/>
+     &lt;/article&gt;<br/>
+    &lt;/section&gt;<br/>
+   &lt;/div&gt;<br/>
+  &lt;/div&gt;<br/>
+  &lt;script type="module" src="/src/main.jsx"&gt;&lt;/script&gt;<br/>
+ &lt;/body&gt;<br/>
+&lt;/html&gt;</code></pre></div></body></html>

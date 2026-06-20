@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><testsuite errors="0" failures="1" name="Validar Total de Compra en Mercapleno" skipped="0" tests="1" time="2.65" timestamp="2026-06-20 04:51:30"><testcase name="Validar que el total calculado en el carrito coincida con el esperado"><failure message="&#13;&#10;Expected: a string starting with &quot;$&quot;&#13;&#10;     but: was &quot;&quot;" type="java.lang.AssertionError">&#13;
+Expected: a string starting with "$"&#13;
+     but: was ""</failure><system-err>&#13;
+Expected: a string starting with "$"&#13;
+     but: was ""&#13;
+com.mercapleno.stepdefinitions.CarritoStepDefinitions.verificarTotalCalculado(CarritoStepDefinitions.java:77)&#13;
+</system-err></testcase></testsuite>

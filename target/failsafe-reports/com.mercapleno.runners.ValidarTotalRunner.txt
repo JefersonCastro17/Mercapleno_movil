@@ -1,0 +1,15 @@
+-------------------------------------------------------------------------------
+Test set: com.mercapleno.runners.ValidarTotalRunner
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 21.64 s <<< FAILURE! -- in com.mercapleno.runners.ValidarTotalRunner
+Validar Total de Compra en Mercapleno.Validar que el total calculado en el carrito coincida con el esperado -- Time elapsed: 21.43 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expected: a string starting with "$"
+     but: was ""
+	at net.serenitybdd.screenplay.ErrorTally.throwSummaryExceptionFrom(ErrorTally.java:38)
+	at net.serenitybdd.screenplay.ErrorTally.reportAnyErrors(ErrorTally.java:32)
+	at net.serenitybdd.screenplay.Actor.should(Actor.java:397)
+	at com.mercapleno.stepdefinitions.CarritoStepDefinitions.verificarTotalCalculado(CarritoStepDefinitions.java:77)
+	at ✽.el total mostrado en el carrito deberia ser la suma de sus precios mas impuestos(file:///C:/Users/jefer/OneDrive/Escritorio/mercaplen_final_version/mercapleno-automation/src/test/resources/features/validar_total.feature:8)
+
